@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.firebase/
+.env
+.env.local
+.DS_Store
+Thumbs.db
+
+# Desktop build dirs
+build/
+build-*/
+bin/
+packaing/
+.vscode/
+web/
