@@ -1,17 +1,17 @@
 # WitcherNotes Web
 
-Sitio web y landing page de WitcherNotes.
+Landing page and web portal for WitcherNotes — Professional Markdown Notebook & Document Workspace.
 
-Desarrollado con React y Vite.
+Built with React and Vite.
 
-## Desarrollo local
+## Local Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Compilacion
+## Production Build
 
 ```bash
 npm run build
