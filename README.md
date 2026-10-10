@@ -1,111 +1,127 @@
-# WitcherNotes — Grimorio Digital & E-Book Note Engine
+# WitcherNotes
 
-> **Software 100% Libre y de Código Abierto (Open Source)** bajo Licencia [MIT](LICENSE).  
-> Sin planes de pago, sin suscripciones y sin necesidad de crear cuentas.
+A native, high-performance Markdown notebook and document workspace built in **C++17** and **Dear ImGui (Docking)** with **OpenGL 3** hardware acceleration.
 
-**WitcherNotes** es una aplicación nativa de notas y gestión de conocimiento desarrollada en **C++17** y **Dear ImGui (Docking)** con aceleración gráfica **OpenGL 3**, diseñada con la estética inmersiva de un **Grimorio / Libro Digital (E-Book)**.
-
-Basada en una sólida arquitectura modular (SplashScreen con animación por pasos, gestión de DPI, paletas de diseño desacopladas, persistencia JSON local y DockSpace avanzado).
+Licensed under the permissive [MIT License](LICENSE). WitcherNotes is fully open-source, offline-first, and private by design, with no subscriptions, cloud lock-in, or mandatory accounts.
 
 ---
 
-## Caracteristicas Principales
+## Key Features
 
-### 1. Experiencia Tipo E-Book (Lector Digital)
-* **Modo Doble Página (Libro Abierto / Hardcover Tome):** Visualiza tus notas como un libro físico con pliegue de encuadernación central con sombras, números de página, encabezados elegantes y márgenes configurables.
-* **Modo Página Única (E-Reader Centrado):** Enfoque clásico de lectura con ancho de columna optimizado para no cansar la vista.
-* **Modo Pergamino Continuo (Scroll):** Lectura vertical sin interrupciones con separadores ornamentales.
-* **Navegación Fluida:** Pasa páginas con `Flecha Izquierda / A` y `Flecha Derecha / D`, o barra espaciadora.
-* **Control Tipográfico:** Modifica el tamaño de fuente y márgenes en tiempo real con fuentes Serif de alta legibilidad (`RobotoSlab`, `OpenSans`).
-* **Marcadores (Bookmarks):** Marca tus páginas predilectas para saltar a ellas rápidamente.
-* **Anotaciones al Margen (Marginalia):** Añade glosas y pensamientos laterales en el margen del pergamino.
+### 1. Document Reading & Viewing Experience
+* **Two-Page Book Spread:** Dual-page layout with center spine shadow, custom margins, and book geometry.
+* **Single-Page View:** Centered reader layout with balanced column width for long-form reading and editing.
+* **Continuous Scroll Mode:** Fluid vertical reading stream with distinct section dividers.
+* **Navigation:** Quick page navigation with arrow keys, Page Up/Down, or Spacebar.
+* **Custom Typography:** Real-time font size adjustments and page margin customization.
+* **Bookmarks & Marginalia:** Save quick access to important pages and add margin notes linked directly to individual documents.
 
-### 2. Exportación Multiformato Completa (Libre y Gratuita)
-* **Documentos PDF:** Genera documentos con maquetación editorial.
-* **Libros Digitales EPUB (.epub):** Compatible con e-readers y lectores de libros digitales.
-* **Microsoft Word (.docx):** Documentos editables estructurados por capítulos y hojas.
-* **Markdown (.md):** Exportación limpia y directa sin dependencias propietarias.
+### 2. Multi-Format Export Engine
+Export single pages or entire notebooks into multiple publishing standards:
+* **PDF Document (.pdf):** Clean editorial layout.
+* **Digital Book (.epub):** Compatible with e-readers and mobile devices.
+* **Microsoft Word (.docx):** Structured document format preserving headers, lists, and quotes.
+* **Markdown (.md):** Clean plain text Markdown files for portable note-taking.
 
-### 3. Privacidad y Funcionamiento 100% Offline
-* **100% Local:** Tus notas y cuadernos se guardan en tu equipo de forma privada y segura.
-* **Sin Registro Forzado:** No necesitas registrarte ni crear cuentas para disfrutar de todas las funciones.
-* **Sin Dependencias de Nube:** Todo el funcionamiento es autónomo en tu máquina.
+### 3. Local-First Architecture & Privacy
+* **Local Storage:** All notebooks and pages are stored locally on your machine in standard JSON format.
+* **Offline-First:** Fully functional without an internet connection.
+* **Auto-Update Engine:** Built-in update checker and installer for GitHub releases (both public and private repositories via personal access tokens).
 
 ---
 
-## Estructura del Codigo
+## Project Structure
 
 ```text
 WitcherNotes/
-├── LICENSE                     # Licencia de código abierto MIT
-├── CMakeLists.txt              # Configuración de compilación con Ninja / Make
-├── scripts/
-│   └── build.sh               # Script de compilación y ejecución automática
-├── assets/
-│   ├── fonts/                 # RobotoSlab, OpenSans, NotoEmoji, Symbola
-│   └── images/                # witchernotes_logo.png, fondos de splash
-├── src/
-│   ├── main.cpp               # Punto de entrada, DPI, ciclo de render y GLFW
-│   ├── SplashScreen.h/.cpp    # SplashScreen modular por pasos y transición
-│   ├── Version.h              # Metadatos de versión y compilación
-│   ├── core/
-│   │   ├── AppPaths.h/.cpp    # Rutas del sistema (~/.config/WitcherNotes)
-│   │   ├── BookModel.h/.cpp   # Modelo Libro, Capítulo, Página y persistencia
-│   │   ├── ExportManager.h/.cpp # Motores de exportación (PDF, EPUB, DOCX, MD)
-│   │   ├── UpdateManager.h/.cpp # Verificación y descarga de actualizaciones
-│   │   └── SettingsManager.h/.cpp # Gestión de temas y configuración de lectura
-│   ├── ui/
-│   │   ├── UIManager.h/.cpp   # Coordinador principal, DockSpace y menús
-│   │   └── panels/
-│   │       ├── ReaderPanel.h/.cpp       # Lector E-Book (Doble página / Spread)
-│   │       ├── EditorPanel.h/.cpp       # Editor con barra de formato y marginalia
-│   │       ├── LibraryPanel.h/.cpp      # Estantería de grimorios y búsqueda
-│   │       ├── TocBookmarksPanel.h/.cpp # Índice interactivo y marcadores
-│   │       └── SettingsPanel.h/.cpp     # Ajustes del lector y temas
-│   ├── vendor/
-│   │   ├── nlohmann/          # json.hpp para serialización
-│   │   └── stb/               # stb_image para texturas
-│   └── external/
-│       └── imgui-docking/     # Dear ImGui con soporte de acoplamiento de paneles
+|-- LICENSE                     # MIT Open Source License
+|-- CMakeLists.txt              # CMake build configuration
+|-- scripts/
+|   |-- build.sh                # Linux build script
+|   `-- exporter.py             # Export engine for EPUB, DOCX, and PDF
+|-- assets/
+|   |-- fonts/                  # TTF fonts (RobotoSlab, OpenSans, etc.)
+|   `-- images/                 # App logos and splash assets
+|-- src/
+|   |-- main.cpp                # Application entrypoint, GLFW window, DPI handling
+|   |-- SplashScreen.h/.cpp     # Animated multi-stage startup loader
+|   |-- Version.h               # Version metadata and constants
+|   |-- core/
+|   |   |-- AppPaths.h/.cpp     # Standard platform path resolution
+|   |   |-- BookModel.h/.cpp    # Document, chapter, and page data models
+|   |   |-- ExportManager.h/.cpp# Export dispatcher
+|   |   |-- SettingsManager.h/.cpp # Theme palettes and reader preferences
+|   |   `-- UpdateManager.h/.cpp# GitHub release update checking & installation
+|   `-- ui/
+|       |-- UIManager.h/.cpp    # Master UI coordinator, dockspace, and menus
+|       `-- panels/
+|           |-- EditorPanel.h/.cpp       # Markdown editor with formatting toolbar
+|           |-- LibraryPanel.h/.cpp      # Notebook gallery and global search
+|           |-- ReaderPanel.h/.cpp       # Two-page spread & continuous reader
+|           |-- SettingsPanel.h/.cpp     # Application preferences and updates
+|           `-- TocBookmarksPanel.h/.cpp # Table of contents, bookmarks, and marginalia
+|-- vendor/
+|   |-- nlohmann/               # JSON serialization library
+|   `-- stb/                    # STB image library
+`-- external/
+    `-- imgui-docking/          # Dear ImGui docking branch
 ```
 
 ---
 
-## Atajos de Teclado
+## Keyboard Shortcuts
 
-| Atajo | Acción |
+| Shortcut | Description |
 |---|---|
-| **Flecha Izquierda / A** | Página anterior del E-Book |
-| **Flecha Derecha / D** | Página siguiente del E-Book |
-| **Espacio / RePág / AvPág** | Navegación rápida entre páginas |
-| **Ctrl + S** | Guardar todos los grimorios y ajustes |
-| **Ctrl + N** | Crear una nueva página en el capítulo actual |
-| **Ctrl + B** | Alternar entre Biblioteca y Espacio de Trabajo |
-| **Ctrl + ,** | Abrir Ajustes y Preferencias |
-| **F11** | Alternar modo inmersivo |
+| **Left Arrow** | Previous page in reader mode |
+| **Right Arrow** | Next page in reader mode |
+| **Space / PageUp / PageDown** | Quick page navigation |
+| **Ctrl + S** | Save all notebooks and preferences |
+| **Ctrl + N** | Add a new page to current section |
+| **Ctrl + B** | Toggle between Library and Workspace |
+| **Ctrl + ,** | Open Settings and Preferences |
+| **F11** | Toggle fullscreen mode |
 
 ---
 
-## Como Compilar y Ejecutar
+## Building from Source
 
-Desde la carpeta `WitcherNotes`:
+### Prerequisites (Linux)
+* CMake 3.16+
+* C++17 compatible compiler (GCC 9+ or Clang 10+)
+* Ninja or GNU Make
+* OpenGL, GLFW3, GLEW, and X11 development headers
 
-### Compilar:
+On Debian / Ubuntu:
+```bash
+sudo apt-get install build-essential cmake ninja-build libglfw3-dev libglew-dev libx11-dev libcurl4-openssl-dev
+```
+
+### Build Instructions
 ```bash
 ./scripts/build.sh linux
 ```
 
-### Ejecutar directamente:
+### Run
 ```bash
 ./scripts/build.sh linux-run
 ```
-o directamente el binario generado:
+or launch the binary directly:
 ```bash
 ./build-linux/WitcherNotes
 ```
 
 ---
 
-## Licencia
+## Packaging
 
-Distribuido bajo la **Licencia MIT**. Consulta el archivo [`LICENSE`](LICENSE) para más detalles.
+To generate a standalone AppImage:
+```bash
+./scripts/package-appimage.sh
+```
+
+---
+
+## License
+
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.

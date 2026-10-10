@@ -28,11 +28,11 @@ void EditorPanel::Render() {
 
     if (!book || !ch || !page) {
         ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.4f);
-        ImGui::TextColored(ToVec4(theme.textDim), "      Selecciona o crea una hoja en la columna izquierda para comenzar a escribir.");
+        ImGui::TextColored(ToVec4(theme.textDim), "      Select or create a page in the left sidebar to begin writing.");
         return;
     }
 
-    // Sincronizar buffers si cambió la selección
+    // Synchronize buffers if active page changed
     int curB = repo.GetActiveBookIndex();
     int curC = repo.GetActiveChapterIndex();
     int curP = repo.GetActivePageIndex();
@@ -47,10 +47,10 @@ void EditorPanel::Render() {
         m_LastLoadedPageIdx = curP;
     }
 
-    // Cabecera: Título de la Hoja
+    // Header: Page title
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 6));
 
-    // Campo de Título
+    // Title input field
     float titleWidth = ImGui::GetContentRegionAvail().x - 170.0f;
     if (titleWidth < 180.0f) titleWidth = 180.0f;
 
@@ -62,8 +62,8 @@ void EditorPanel::Render() {
 
     ImGui::SameLine();
 
-    // Toggle Modo Editor / Lectura
-    if (ImGui::Button(m_ReadingMode ? "✏ Modo Edición" : "📖 Vista Lectura", ImVec2(160.0f, 0))) {
+    // Toggle Edit Mode / Reading View
+    if (ImGui::Button(m_ReadingMode ? "Edit Mode" : "Reading View", ImVec2(160.0f, 0))) {
         m_ReadingMode = !m_ReadingMode;
     }
 
@@ -73,12 +73,12 @@ void EditorPanel::Render() {
     RenderToolbar();
     ImGui::Spacing();
 
-    // Área de Contenido Principal
+    // Main Content Area
     float availH = ImGui::GetContentRegionAvail().y - 28.0f;
     if (availH < 120.0f) availH = 120.0f;
 
     if (!m_ReadingMode) {
-        // Modo Edición
+        // Edit Mode
         ImGui::PushStyleColor(ImGuiCol_FrameBg, ToVec4(theme.surface0));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12, 12));
 
@@ -92,7 +92,7 @@ void EditorPanel::Render() {
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
     } else {
-        // Vista Lectura Formateada
+        // Formatted Reading View
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ToVec4(theme.pageBg));
         ImGui::BeginChild("##ReaderView", ImVec2(ImGui::GetContentRegionAvail().x, availH), true);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24, 20));
@@ -111,11 +111,11 @@ void EditorPanel::Render() {
         ImGui::PopStyleColor();
     }
 
-    // Pie de la columna con estadísticas
+    // Bottom statistics
     ImGui::Spacing();
     int words = page->GetWordCount();
     int readTime = page->GetReadingTimeMinutes();
-    ImGui::TextColored(ToVec4(theme.textDim), "📊 %d palabras  |  %zu caracteres  |  ~%d min de lectura",
+    ImGui::TextColored(ToVec4(theme.textDim), "%d words  |  %zu characters  |  ~%d min read",
                        words, m_ContentBuffer.size(), readTime);
 }
 
@@ -131,19 +131,19 @@ void EditorPanel::RenderToolbar() {
     ImGui::SameLine();
     if (ImGui::Button("H3"))          InsertSnippet("### ");
     ImGui::SameLine();
-    if (ImGui::Button("Negrita"))     InsertSnippet("**texto**");
+    if (ImGui::Button("Bold"))        InsertSnippet("**bold text**");
     ImGui::SameLine();
-    if (ImGui::Button("Cursiva"))     InsertSnippet("*texto*");
+    if (ImGui::Button("Italic"))      InsertSnippet("*italic text*");
     ImGui::SameLine();
-    if (ImGui::Button("Cita"))        InsertSnippet("> \"Cita o nota destacada...\"\n");
+    if (ImGui::Button("Quote"))       InsertSnippet("> Blockquote or key note...\n");
     ImGui::SameLine();
-    if (ImGui::Button("Código"))      InsertSnippet("```\n// código\n```\n");
+    if (ImGui::Button("Code"))        InsertSnippet("```\n// code snippet\n```\n");
     ImGui::SameLine();
-    if (ImGui::Button("• Lista"))     InsertSnippet("* Elemento\n");
+    if (ImGui::Button("List"))        InsertSnippet("* Item\n");
     ImGui::SameLine();
-    if (ImGui::Button("1. Tarea"))    InsertSnippet("1. Acción pendiente\n");
+    if (ImGui::Button("Numbered"))    InsertSnippet("1. Item\n");
     ImGui::SameLine();
-    if (ImGui::Button("--- Línea"))   InsertSnippet("\n---\n\n");
+    if (ImGui::Button("Rule"))        InsertSnippet("\n---\n\n");
 
     ImGui::PopStyleVar(2);
     ImGui::Separator();

@@ -3,7 +3,7 @@
 namespace WitcherNotes::Splash {
 
 Art PickArt() {
-    return {"", "Notas"};
+    return {"", "Notes"};
 }
 
 void Render(GLFWwindow*, ImVec2, const std::string&, float,

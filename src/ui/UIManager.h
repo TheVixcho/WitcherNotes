@@ -62,9 +62,9 @@ private:
 
     char m_SheetFilter[64] = {};
     bool m_OpenNewSheetModal = false;
-    char m_NewSheetTitle[128] = "Nueva Hoja";
+    char m_NewSheetTitle[128] = "New Page";
     bool m_OpenNewSectionModal = false;
-    char m_NewSectionTitle[128] = "Nueva Sección";
+    char m_NewSectionTitle[128] = "New Section";
 };
 
 } // namespace WitcherNotes::UI

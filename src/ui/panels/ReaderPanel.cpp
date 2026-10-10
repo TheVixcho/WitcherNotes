@@ -36,20 +36,20 @@ void ReaderPanel::Render() {
     if (!book || book->chapters.empty()) {
         ImGui::BeginChild("##ReaderEmpty", ImVec2(0, 0), true);
         ImGui::SetCursorPosY(ImGui::GetWindowHeight() * 0.4f);
-        ImGui::TextColored(ToVec4(theme.accentLight), "    ✦ Ningún documento seleccionado.");
-        ImGui::TextColored(ToVec4(theme.textDim), "    Crea o selecciona un documento en la biblioteca para comenzar a leer o anotar.");
+        ImGui::TextColored(ToVec4(theme.accentLight), "    No document selected.");
+        ImGui::TextColored(ToVec4(theme.textDim), "    Create or select a notebook from the library to begin reading or editing.");
         ImGui::EndChild();
         return;
     }
 
-    // Barra de herramientas superior del lector E-Book
+    // Top control toolbar
     RenderControlsBar();
 
-    // Área principal de lectura
+    // Main reading area
     ImVec2 avail = ImGui::GetContentRegionAvail();
     if (avail.x < 50.0f || avail.y < 50.0f) return;
 
-    // Manejo de atajos de teclado para pasar página (Izquierda / Derecha)
+    // Keyboard shortcuts for page turn (Left / Right)
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {
         if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_PageUp)) {
             if (repo.HasPrevPage()) repo.PrevPage();
@@ -79,19 +79,19 @@ void ReaderPanel::RenderControlsBar() {
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 4));
 
-    // Botones de navegación de página
+    // Page navigation buttons
     bool hasPrev = repo.HasPrevPage();
     bool hasNext = repo.HasNextPage();
 
     if (!hasPrev) ImGui::BeginDisabled();
-    if (ImGui::Button("◀ Anterior")) {
+    if (ImGui::Button("Previous")) {
         repo.PrevPage();
     }
     if (!hasPrev) ImGui::EndDisabled();
 
     ImGui::SameLine();
     if (!hasNext) ImGui::BeginDisabled();
-    if (ImGui::Button("Siguiente ▶")) {
+    if (ImGui::Button("Next")) {
         repo.NextPage();
     }
     if (!hasNext) ImGui::EndDisabled();
@@ -100,8 +100,8 @@ void ReaderPanel::RenderControlsBar() {
     ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
     ImGui::SameLine();
 
-    // Selector de modo de lectura
-    const char* modeNames[] = { "📖 Doble Página", "📄 Página Única", "📜 Pergamino" };
+    // Reading mode selector
+    const char* modeNames[] = { "Two Pages", "Single Page", "Continuous Scroll" };
     int curMode = static_cast<int>(settings.readerMode);
     ImGui::SetNextItemWidth(150.0f);
     if (ImGui::Combo("##ReaderModeCombo", &curMode, modeNames, 3)) {
@@ -110,7 +110,7 @@ void ReaderPanel::RenderControlsBar() {
     }
 
     ImGui::SameLine();
-    // Zoom de fuente
+    // Font zoom
     if (ImGui::Button("A-") && settings.readerFontSize > 12.0f) {
         settings.readerFontSize -= 1.0f;
         SettingsManager::Get().Save();
@@ -125,14 +125,14 @@ void ReaderPanel::RenderControlsBar() {
     ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
     ImGui::SameLine();
 
-    // Marcador (Bookmark)
+    // Bookmark
     if (pg) {
         bool bmk = pg->isBookmarked;
         if (bmk) {
             ImGui::PushStyleColor(ImGuiCol_Button, ToVec4(theme.accent));
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.1f, 0.08f, 0.05f, 1.0f));
         }
-        if (ImGui::Button(bmk ? "★ Marcada" : "☆ Marcar")) {
+        if (ImGui::Button(bmk ? "Bookmarked" : "Bookmark")) {
             pg->isBookmarked = !pg->isBookmarked;
             repo.MarkDirty();
             repo.Save();
@@ -142,7 +142,7 @@ void ReaderPanel::RenderControlsBar() {
         }
     }
 
-    // Información de lectura a la derecha
+    // Reading stats on right
     if (book && ch && pg) {
         int totalBookPages = book->GetTotalPages();
         int curGlobalPage = book->GetGlobalPageIndex(repo.GetActiveChapterIndex(), repo.GetActivePageIndex()) + 1;
@@ -150,7 +150,7 @@ void ReaderPanel::RenderControlsBar() {
         int readTime = pg->GetReadingTimeMinutes();
 
         char infoBuf[128];
-        snprintf(infoBuf, sizeof(infoBuf), "Pág. %d de %d  |  %d palabras (~%d min)",
+        snprintf(infoBuf, sizeof(infoBuf), "Page %d of %d  |  %d words (~%d min)",
                  curGlobalPage, totalBookPages, wordCount, readTime);
 
         float textW = ImGui::CalcTextSize(infoBuf).x;
@@ -178,13 +178,13 @@ void ReaderPanel::RenderTwoPageSpread(float availWidth, float availHeight) {
     ImVec2 origin = ImGui::GetCursorScreenPos();
     ImDrawList* dl = ImGui::GetWindowDrawList();
 
-    // Dibujar encuadernación exterior de cuero del libro
+    // Book outer binding
     ImVec2 bookMin(origin.x + bookPad - 6.0f, origin.y + 2.0f);
     ImVec2 bookMax(origin.x + (bookPad * 2.0f) + (pageW * 2.0f) + 12.0f, origin.y + pageH + 6.0f);
     dl->AddRectFilled(bookMin, bookMax, ToU32(theme.surface0), 10.0f);
     dl->AddRect(bookMin, bookMax, ToU32(theme.accent, 0.4f), 10.0f, 0, 1.5f);
 
-    // Página Izquierda (Página activa)
+    // Left Page (Active page)
     int leftChIdx = repo.GetActiveChapterIndex();
     int leftPgIdx = repo.GetActivePageIndex();
     int totalBookPages = book->GetTotalPages();
@@ -200,7 +200,7 @@ void ReaderPanel::RenderTwoPageSpread(float availWidth, float availHeight) {
                           leftPos, pageSize, true);
     }
 
-    // Página Derecha (Página siguiente si existe)
+    // Right Page (Next page if exists)
     int rightChIdx = leftChIdx;
     int rightPgIdx = leftPgIdx + 1;
     Page* rightPage = nullptr;
@@ -221,14 +221,14 @@ void ReaderPanel::RenderTwoPageSpread(float availWidth, float availHeight) {
                           rightPage->signTag, rightGlobalPage, totalBookPages,
                           rightPos, pageSize, false);
     } else {
-        // Página en blanco de fin de libro
+        // Blank end of book page
         dl->AddRectFilled(rightPos, ImVec2(rightPos.x + pageSize.x, rightPos.y + pageSize.y),
                           ToU32(theme.pageBg), 6.0f);
         dl->AddRect(rightPos, ImVec2(rightPos.x + pageSize.x, rightPos.y + pageSize.y),
                     ToU32(theme.pageBorder), 6.0f);
 
         ImVec2 textPos(rightPos.x + pageSize.x * 0.35f, rightPos.y + pageSize.y * 0.45f);
-        dl->AddText(textPos, ToU32(theme.textFaint), "— Fin del Grimorio —");
+        dl->AddText(textPos, ToU32(theme.textFaint), "— End of Document —");
     }
 
     // Sombra del lomo central (Efecto encuadernación física)
@@ -297,8 +297,8 @@ void ReaderPanel::RenderContinuousScroll(float availWidth, float availHeight) {
 
     ImGui::PushStyleColor(ImGuiCol_Text, ToVec4(theme.pageText));
 
-    // Cabecera del capítulo
-    ImGui::TextColored(ToVec4(theme.accent), "CAPÍTULO: %s", ch->title.c_str());
+    // Chapter header
+    ImGui::TextColored(ToVec4(theme.accent), "SECTION: %s", ch->title.c_str());
     if (!ch->description.empty()) {
         ImGui::TextColored(ToVec4(theme.textDim), "%s", ch->description.c_str());
     }
@@ -308,20 +308,20 @@ void ReaderPanel::RenderContinuousScroll(float availWidth, float availHeight) {
     for (size_t i = 0; i < ch->pages.size(); ++i) {
         const auto& pg = ch->pages[i];
 
-        // Título de la página y runa
+        // Page title and category badge
         ImGui::Spacing();
-        ImGui::TextColored(ToVec4(theme.accentLight), "%s  %s",
-                           SignRuneSymbol(StringToSign(pg.signTag)), pg.title.c_str());
+        std::string badge = (!pg.signTag.empty() && pg.signTag != "GENERAL") ? ("[" + pg.signTag + "] ") : "";
+        ImGui::TextColored(ToVec4(theme.accentLight), "%s%s", badge.c_str(), pg.title.c_str());
         ImGui::Spacing();
 
-        // Contenido con wrap
+        // Wrapped content
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + maxW - 72.0f);
         ImGui::TextUnformatted(pg.content.c_str());
         ImGui::PopTextWrapPos();
 
         if (!pg.marginalia.empty()) {
             ImGui::Spacing();
-            ImGui::TextColored(ToVec4(theme.accentDim), "  ✍ Marginalia: %s", pg.marginalia.c_str());
+            ImGui::TextColored(ToVec4(theme.accentDim), "  Marginalia: %s", pg.marginalia.c_str());
         }
 
         ImGui::Spacing();
@@ -345,7 +345,7 @@ void ReaderPanel::RenderPageContent(const std::string& title, const std::string&
     auto& settings = SettingsManager::Get().GetSettings();
     ImDrawList* dl = ImGui::GetWindowDrawList();
 
-    // Sombra de fondo de hoja física (stack de páginas)
+    // Page shadow
     ImVec2 pageMin = pos;
     ImVec2 pageMax(pos.x + size.x, pos.y + size.y);
 
@@ -353,51 +353,50 @@ void ReaderPanel::RenderPageContent(const std::string& title, const std::string&
                       ImVec2(pageMax.x + 2.0f, pageMax.y + 2.0f),
                       IM_COL32(0, 0, 0, 45), 6.0f);
 
-    // Fondo del pergamino/hoja
+    // Page background
     dl->AddRectFilled(pageMin, pageMax, ToU32(theme.pageBg), 6.0f);
 
-    // Borde decorativo de pergamino antiguo
+    // Page decorative borders
     if (settings.showPageBorders) {
         dl->AddRect(pageMin, pageMax, ToU32(theme.pageBorder), 6.0f, 0, 1.2f);
-        // Doble línea de filete interior clásica
         dl->AddRect(ImVec2(pageMin.x + 5.0f, pageMin.y + 5.0f),
                     ImVec2(pageMax.x - 5.0f, pageMax.y - 5.0f),
                     ToU32(theme.pageBorder, 0.35f), 4.0f, 0, 1.0f);
     }
 
-    // Cabecera del libro (Book header)
+    // Document header
     auto& repo = BookRepository::Get();
     Book* book = repo.GetActiveBook();
     Chapter* ch = repo.GetActiveChapter();
 
     float headerY = pos.y + 16.0f;
-    std::string headerText = isLeftPage ? (book ? book->title : "Documento") : (ch ? ch->title : "Sección");
+    std::string headerText = isLeftPage ? (book ? book->title : "Document") : (ch ? ch->title : "Section");
 
     ImVec2 headerSz = ImGui::CalcTextSize(headerText.c_str());
     float headerX = pos.x + (size.x - headerSz.x) * 0.5f;
     dl->AddText(ImVec2(headerX, headerY), ToU32(theme.textFaint), headerText.c_str());
 
-    // Insignia del Signo Witcher o Categoría en esquina superior
+    // Category badge in upper corner
     if (!signTag.empty() && signTag != "GENERAL") {
-        const char* rune = SignRuneSymbol(StringToSign(signTag));
-        ImVec2 runeSz = ImGui::CalcTextSize(rune);
-        float runeX = isLeftPage ? (pos.x + 22.0f) : (pos.x + size.x - runeSz.x - 22.0f);
-        dl->AddText(ImVec2(runeX, headerY), ToU32(theme.accent), rune);
+        std::string badge = "[" + signTag + "]";
+        ImVec2 badgeSz = ImGui::CalcTextSize(badge.c_str());
+        float badgeX = isLeftPage ? (pos.x + 22.0f) : (pos.x + size.x - badgeSz.x - 22.0f);
+        dl->AddText(ImVec2(badgeX, headerY), ToU32(theme.accent), badge.c_str());
     }
 
-    // Divisor sutil bajo cabecera
+    // Divider under header
     dl->AddLine(ImVec2(pos.x + 24.0f, headerY + 18.0f),
                 ImVec2(pos.x + size.x - 24.0f, headerY + 18.0f),
                 ToU32(theme.pageBorder, 0.25f), 1.0f);
 
-    // Contenedor scrolleable del texto de la página
+    // Page text scroll container
     float textStartY = headerY + 28.0f;
     float footerH = 34.0f;
     float textH = size.y - (textStartY - pos.y) - footerH;
     float marginX = settings.readerPageMargin;
     float textW = size.x - (marginX * 2.0f);
 
-    // Margen para marginalia si existe
+    // Marginalia margin if enabled
     bool hasMarginalia = settings.showMarginalia && !marginalia.empty();
     float marginaliaW = hasMarginalia ? std::min(textW * 0.28f, 150.0f) : 0.0f;
     float contentW = textW - marginaliaW - (hasMarginalia ? 14.0f : 0.0f);
@@ -410,16 +409,15 @@ void ReaderPanel::RenderPageContent(const std::string& title, const std::string&
 
     ImGui::PushStyleColor(ImGuiCol_Text, ToVec4(theme.pageText));
 
-    // Título de la página
+    // Page title
     ImGui::Spacing();
     ImGui::TextColored(ToVec4(theme.accentLight), "%s", title.c_str());
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Renderizar cuerpo del texto
+    // Body text
     if (hasMarginalia) {
-        // Dos columnas: contenido a la izquierda, marginalia a la derecha
         ImGui::Columns(2, "##MarginaliaCols", false);
         ImGui::SetColumnWidth(0, contentW);
         ImGui::SetColumnWidth(1, marginaliaW);
@@ -430,7 +428,7 @@ void ReaderPanel::RenderPageContent(const std::string& title, const std::string&
 
         ImGui::NextColumn();
         ImGui::PushStyleColor(ImGuiCol_Text, ToVec4(theme.accentDim));
-        ImGui::Text("✍ Notas:");
+        ImGui::Text("Notes:");
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + marginaliaW);
         ImGui::TextWrapped("%s", marginalia.c_str());
         ImGui::PopTextWrapPos();

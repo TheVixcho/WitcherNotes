@@ -97,8 +97,8 @@ def markdown_to_html_blocks(md_text):
 # ==============================================================================
 
 def export_epub(doc_data, out_path):
-    title = html.escape(doc_data.get("title", "Documento"))
-    author = html.escape(doc_data.get("author", "Usuario"))
+    title = html.escape(doc_data.get("title", "Document"))
+    author = html.escape(doc_data.get("author", "User"))
     subtitle = html.escape(doc_data.get("subtitle", ""))
     chapters = doc_data.get("chapters", [])
     now_iso = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -177,15 +177,15 @@ hr { border: 0; height: 1px; background: #e2e8f0; margin: 2em 0; }
         nav_idx = 1
 
         for c_idx, ch in enumerate(chapters):
-            ch_title = html.escape(ch.get("title", f"Sección {c_idx+1}"))
+            ch_title = html.escape(ch.get("title", f"Section {c_idx+1}"))
             for p_idx, pg in enumerate(ch.get("pages", [])):
-                p_title = html.escape(pg.get("title", f"Hoja {p_idx+1}"))
+                p_title = html.escape(pg.get("title", f"Page {p_idx+1}"))
                 content_html = markdown_to_html_blocks(pg.get("content", ""))
                 marginalia = pg.get("marginalia", "").strip()
 
                 marg_html = ""
                 if marginalia:
-                    marg_html = f'<div class="marginalia"><strong>✍ Notas:</strong> {html.escape(marginalia)}</div>'
+                    marg_html = f'<div class="marginalia"><strong>Notes:</strong> {html.escape(marginalia)}</div>'
 
                 page_id = f"page_{c_idx}_{p_idx}"
                 filename = f"{page_id}.xhtml"
@@ -257,8 +257,8 @@ hr { border: 0; height: 1px; background: #e2e8f0; margin: 2em 0; }
 # ==============================================================================
 
 def export_docx(doc_data, out_path):
-    title = html.escape(doc_data.get("title", "Documento"))
-    author = html.escape(doc_data.get("author", "Usuario"))
+    title = html.escape(doc_data.get("title", "Document"))
+    author = html.escape(doc_data.get("author", "User"))
     subtitle = html.escape(doc_data.get("subtitle", ""))
     chapters = doc_data.get("chapters", [])
 
@@ -281,13 +281,13 @@ def export_docx(doc_data, out_path):
     body_xml_parts.append(f'''
     <w:p>
       <w:pPr><w:jc w:val="center"/></w:pPr>
-      <w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:color w:val="888888"/></w:rPr><w:t>Autor: {author}</w:t></w:r>
+      <w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:color w:val="888888"/></w:rPr><w:t>Author: {author}</w:t></w:r>
     </w:p>
     <w:p><w:r><w:br w:type="page"/></w:r></w:p>''')
 
     # Contenido por capítulos y hojas
     for ch in chapters:
-        ch_title = html.escape(ch.get("title", "Sección"))
+        ch_title = html.escape(ch.get("title", "Section"))
         body_xml_parts.append(f'''
     <w:p>
       <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
@@ -295,7 +295,7 @@ def export_docx(doc_data, out_path):
     </w:p>''')
 
         for pg in ch.get("pages", []):
-            p_title = html.escape(pg.get("title", "Hoja"))
+            p_title = html.escape(pg.get("title", "Page"))
             content = pg.get("content", "")
             marginalia = pg.get("marginalia", "").strip()
 
@@ -336,7 +336,7 @@ def export_docx(doc_data, out_path):
                 body_xml_parts.append(f'''
     <w:p>
       <w:pPr><w:ind w:left="720"/><w:shd w:val="clear" w:color="auto" w:fill="F2F4F7"/></w:pPr>
-      <w:r><w:rPr><w:b/><w:sz w:val="18"/><w:color w:val="777777"/></w:rPr><w:t>✍ Notas: </w:t></w:r>
+      <w:r><w:rPr><w:b/><w:sz w:val="18"/><w:color w:val="777777"/></w:rPr><w:t>Notes: </w:t></w:r>
       <w:r><w:rPr><w:i/><w:sz w:val="18"/><w:color w:val="555555"/></w:rPr><w:t>{m_esc}</w:t></w:r>
     </w:p>''')
 
@@ -407,8 +407,8 @@ class SimplePDFBuilder:
         return "".join(safe)
 
     def build(self, doc_data, out_path):
-        title = doc_data.get("title", "Documento")
-        author = doc_data.get("author", "Usuario")
+        title = doc_data.get("title", "Document")
+        author = doc_data.get("author", "User")
         subtitle = doc_data.get("subtitle", "")
         chapters = doc_data.get("chapters", [])
 
@@ -417,14 +417,14 @@ class SimplePDFBuilder:
         lines.append(("COVER_TITLE", title))
         if subtitle:
             lines.append(("COVER_SUB", subtitle))
-        lines.append(("COVER_AUTH", f"Autor: {author}"))
+        lines.append(("COVER_AUTH", f"Author: {author}"))
         lines.append(("PAGE_BREAK", ""))
 
         for ch in chapters:
-            lines.append(("H1", ch.get("title", "Sección")))
+            lines.append(("H1", ch.get("title", "Section")))
             lines.append(("SEP", ""))
             for pg in ch.get("pages", []):
-                lines.append(("H2", pg.get("title", "Hoja")))
+                lines.append(("H2", pg.get("title", "Page")))
                 content = pg.get("content", "")
                 for raw_line in content.splitlines():
                     s = raw_line.strip()
@@ -447,7 +447,7 @@ class SimplePDFBuilder:
 
                 marginalia = pg.get("marginalia", "").strip()
                 if marginalia:
-                    lines.append(("MARG", f"Notas: {marginalia}"))
+                    lines.append(("MARG", f"Notes: {marginalia}"))
                 lines.append(("PAGE_BREAK", ""))
 
         # Paginador
@@ -542,7 +542,7 @@ class SimplePDFBuilder:
             pdf_pages.append("\n".join(cur_ops))
 
         if not pdf_pages:
-            pdf_pages.append(f"BT /F1 12 Tf {self.margin_x} {self.page_h/2} Td (Documento vacio) Tj ET")
+            pdf_pages.append(f"BT /F1 12 Tf {self.margin_x} {self.page_h/2} Td (Empty document) Tj ET")
 
         # Escribir estructura PDF 1.4
         total_p = len(pdf_pages)
@@ -617,7 +617,7 @@ class SimplePDFBuilder:
 
 def main():
     if len(sys.argv) < 4:
-        print("Uso: exporter.py <input.json> <output_file> <format: epub|docx|pdf|md>")
+        print("Usage: exporter.py <input.json> <output_file> <format: epub|docx|pdf|md>")
         sys.exit(1)
 
     json_path = sys.argv[1]
@@ -625,7 +625,7 @@ def main():
     fmt = sys.argv[3].lower()
 
     if not os.path.exists(json_path):
-        print(f"Error: archivo no encontrado {json_path}")
+        print(f"Error: file not found: {json_path}")
         sys.exit(1)
 
     with open(json_path, 'r', encoding='utf-8') as f:
@@ -641,7 +641,6 @@ def main():
     elif fmt == "pdf":
         success = SimplePDFBuilder().build(doc_data, out_path)
     elif fmt == "md":
-        # Exportación simple en Markdown
         with open(out_path, 'w', encoding='utf-8') as f:
             f.write(f"# {doc_data.get('title')}\n\n")
             for ch in doc_data.get('chapters', []):
@@ -650,14 +649,14 @@ def main():
                     f.write(f"### {pg.get('title')}\n\n{pg.get('content')}\n\n")
         success = True
     else:
-        print(f"Formato no reconocido: {fmt}")
+        print(f"Unrecognized format: {fmt}")
         sys.exit(1)
 
     if success:
-        print(f"EXITO: Exportado a {out_path}")
+        print(f"SUCCESS: Exported to {out_path}")
         sys.exit(0)
     else:
-        print("Error en la exportación.")
+        print("Error during export.")
         sys.exit(1)
 
 if __name__ == "__main__":

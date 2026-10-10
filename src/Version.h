@@ -4,10 +4,10 @@
 #define APP_VERSION_MINOR 0
 #define APP_VERSION_PATCH 1
 #define APP_VERSION_STRING "0.0.1"
-#define APP_NAME "Cuaderno de Notas"
-#define APP_DESCRIPTION "Gestor y Editor de Documentos, Cuadernos y Notas"
+#define APP_NAME "WitcherNotes"
+#define APP_DESCRIPTION "Professional Markdown Notebook & Document Workspace"
 
-// Compatibilidad con código existente
+// Compatibility macros
 #define WITCHERNOTES_APP_NAME APP_NAME
 #define WITCHERNOTES_APP_DESCRIPTION APP_DESCRIPTION
 #define WITCHERNOTES_VERSION_MAJOR APP_VERSION_MAJOR

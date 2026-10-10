@@ -42,39 +42,39 @@ std::string CategoryToString(NoteCategory cat) {
 NoteCategory StringToCategory(const std::string& str) {
     std::string upper = str;
     std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
-    if (upper == "IDEAS" || upper == "AARD")         return NoteCategory::Ideas;
-    if (upper == "DRAFT" || upper == "BORRADOR")      return NoteCategory::Borrador;
-    if (upper == "IMPORTANT" || upper == "IMPORTANTE" || upper == "IGNI") return NoteCategory::Importante;
-    if (upper == "REFERENCE" || upper == "REFERENCIA" || upper == "BESTIARY") return NoteCategory::Referencia;
-    if (upper == "TASKS" || upper == "TAREAS" || upper == "YRDEN")   return NoteCategory::Tareas;
-    if (upper == "PROJECT" || upper == "PROYECTO" || upper == "QUEST") return NoteCategory::Proyecto;
-    if (upper == "STUDY" || upper == "ESTUDIO" || upper == "ALCHEMY" || upper == "LORE") return NoteCategory::Estudio;
+    if (upper == "IDEAS")                                         return NoteCategory::Ideas;
+    if (upper == "DRAFT" || upper == "BORRADOR")                  return NoteCategory::Borrador;
+    if (upper == "IMPORTANT" || upper == "IMPORTANTE" || upper == "PRIORITY") return NoteCategory::Importante;
+    if (upper == "REFERENCE" || upper == "REFERENCIA")            return NoteCategory::Referencia;
+    if (upper == "TASKS" || upper == "TAREAS")                    return NoteCategory::Tareas;
+    if (upper == "PROJECT" || upper == "PROYECTO")                return NoteCategory::Proyecto;
+    if (upper == "STUDY" || upper == "ESTUDIO")                   return NoteCategory::Estudio;
     return NoteCategory::General;
 }
 
 const char* CategoryDisplayName(NoteCategory cat) {
     switch (cat) {
-        case NoteCategory::Ideas:       return "Ideas y Bocetos";
-        case NoteCategory::Borrador:    return "Borrador";
-        case NoteCategory::Importante:  return "Prioritario / Importante";
-        case NoteCategory::Referencia:  return "Referencia y Recursos";
-        case NoteCategory::Tareas:      return "Tareas y Acciones";
-        case NoteCategory::Proyecto:    return "Proyecto";
-        case NoteCategory::Estudio:     return "Estudio e Investigación";
-        default:                        return "Nota General";
+        case NoteCategory::Ideas:       return "Ideas & Brainstorming";
+        case NoteCategory::Borrador:    return "Draft";
+        case NoteCategory::Importante:  return "Priority / Important";
+        case NoteCategory::Referencia:  return "Reference & Resources";
+        case NoteCategory::Tareas:      return "Tasks & Actions";
+        case NoteCategory::Proyecto:    return "Project Documentation";
+        case NoteCategory::Estudio:     return "Study & Research";
+        default:                        return "General Note";
     }
 }
 
 const char* CategorySymbol(NoteCategory cat) {
     switch (cat) {
-        case NoteCategory::Ideas:       return "[💡 IDEAS]";
-        case NoteCategory::Borrador:    return "[✏ BORRADOR]";
-        case NoteCategory::Importante:  return "[⭐ IMPORTANTE]";
-        case NoteCategory::Referencia:  return "[📚 REFERENCIA]";
-        case NoteCategory::Tareas:      return "[☑ TAREAS]";
-        case NoteCategory::Proyecto:    return "[🚀 PROYECTO]";
-        case NoteCategory::Estudio:     return "[🔬 ESTUDIO]";
-        default:                        return "[📝 NOTA]";
+        case NoteCategory::Ideas:       return "[IDEAS]";
+        case NoteCategory::Borrador:    return "[DRAFT]";
+        case NoteCategory::Importante:  return "[IMPORTANT]";
+        case NoteCategory::Referencia:  return "[REFERENCE]";
+        case NoteCategory::Tareas:      return "[TASKS]";
+        case NoteCategory::Proyecto:    return "[PROJECT]";
+        case NoteCategory::Estudio:     return "[STUDY]";
+        default:                        return "[GENERAL]";
     }
 }
 
@@ -247,23 +247,23 @@ void BookRepository::PrevPage() {
 void BookRepository::AddBook(const std::string& title, const std::string& subtitle, const std::string& author, const std::string& coverTheme) {
     Book b;
     b.id = "doc_" + std::to_string(std::time(nullptr));
-    b.title = title.empty() ? "Nuevo Documento" : title;
+    b.title = title.empty() ? "New Notebook" : title;
     b.subtitle = subtitle;
-    b.author = author.empty() ? "Usuario" : author;
-    b.category = "Documentos";
+    b.author = author.empty() ? "User" : author;
+    b.category = "Notebooks";
     b.coverTheme = coverTheme.empty() ? "Dark" : coverTheme;
     b.createdAt = GetCurrentTimestampStr();
     b.updatedAt = b.createdAt;
 
     Chapter ch;
     ch.id = "ch_1";
-    ch.title = "Sección 1";
-    ch.description = "Primera sección del documento";
+    ch.title = "Section 1";
+    ch.description = "First section of this notebook";
 
     Page p;
     p.id = "pg_1";
-    p.title = "Página 1";
-    p.content = "# " + b.title + "\n\nComienza a escribir aquí tu documento o notas...\n";
+    p.title = "Page 1";
+    p.content = "# " + b.title + "\n\nStart writing your notes here...\n";
     p.marginalia = "";
     p.signTag = "GENERAL";
     p.createdAt = b.createdAt;
@@ -292,13 +292,13 @@ void BookRepository::AddChapter(const std::string& title) {
 
     Chapter ch;
     ch.id = "ch_" + std::to_string(std::time(nullptr));
-    ch.title = title.empty() ? ("Sección " + std::to_string(b->chapters.size() + 1)) : title;
+    ch.title = title.empty() ? ("Section " + std::to_string(b->chapters.size() + 1)) : title;
     ch.description = "";
 
     Page p;
     p.id = "pg_" + std::to_string(std::time(nullptr));
-    p.title = "Nueva Hoja";
-    p.content = "# " + ch.title + "\n\nEscribe aquí tus apuntes...\n";
+    p.title = "Page 1";
+    p.content = "# " + ch.title + "\n\nWrite your notes here...\n";
     p.marginalia = "";
     p.signTag = "GENERAL";
     p.createdAt = GetCurrentTimestampStr();
@@ -329,8 +329,8 @@ void BookRepository::AddPage(const std::string& title, const std::string& signTa
 
     Page p;
     p.id = "pg_" + std::to_string(std::time(nullptr));
-    p.title = title.empty() ? ("Hoja " + std::to_string(ch->pages.size() + 1)) : title;
-    p.content = "## " + p.title + "\n\nEscribe aquí tus notas...\n";
+    p.title = title.empty() ? ("Page " + std::to_string(ch->pages.size() + 1)) : title;
+    p.content = "## " + p.title + "\n\nStart typing here...\n";
     p.marginalia = "";
     p.signTag = signTag.empty() ? "GENERAL" : signTag;
     p.createdAt = GetCurrentTimestampStr();
@@ -592,116 +592,117 @@ bool BookRepository::Load() {
 void BookRepository::PopulateDefaultsIfEmpty() {
     m_Books.clear();
 
-    // 1. Cuaderno Principal de Proyectos y Notas
+    // 1. Primary Work & Project Notebook
     {
         Book b1;
-        b1.id = "doc_proyectos";
-        b1.title = "Cuaderno de Trabajo y Proyectos";
-        b1.subtitle = "Planificación, notas de reuniones y apuntes diarios";
-        b1.author = "Usuario";
-        b1.category = "Trabajo";
+        b1.id = "doc_work";
+        b1.title = "Work & Project Notebook";
+        b1.subtitle = "Planning, meeting notes, and project roadmap";
+        b1.author = "User";
+        b1.category = "Work";
         b1.coverTheme = "Dark";
         b1.createdAt = GetCurrentTimestampStr();
         b1.updatedAt = b1.createdAt;
 
         Chapter ch1;
-        ch1.id = "ch_guia";
-        ch1.title = "Sección I: Guía y Organización";
-        ch1.description = "Introducción a la estructura organizada del cuaderno.";
+        ch1.id = "ch_overview";
+        ch1.title = "Section I: Getting Started";
+        ch1.description = "Overview of the workspace structure and formatting options.";
 
         Page p1;
-        p1.id = "p_bienvenida";
-        p1.title = "Bienvenido a tu Cuaderno de Notas";
+        p1.id = "p_welcome";
+        p1.title = "Welcome to WitcherNotes";
         p1.signTag = "GENERAL";
         p1.isBookmarked = true;
         p1.content =
-            "# Bienvenido a tu Cuaderno de Notas\n\n"
-            "Esta aplicación te permite organizar tus documentos y cuadernos de forma clara, rápida y sin distracciones.\n\n"
-            "### Cómo está organizada la pantalla:\n"
-            "* **Columna Izquierda (Hojas del Documento):** Aquí ves todas las secciones y páginas del documento. Puedes añadir nuevas hojas, duplicarlas o navegar entre ellas con un solo clic.\n"
-            "* **Columna Central (Editor del Documento):** Tu espacio principal para escribir y formatear tus textos con Markdown (encabezados, negrita, listas, citas, etc.).\n"
-            "* **Columna Derecha (Notas, Marcadores e Info):** Espacio para ir dejando notas al margen y apuntes rápidos asociados a cada página, gestionar marcadores favoritos y ver estadísticas del documento.\n\n"
+            "# Welcome to WitcherNotes\n\n"
+            "WitcherNotes is a distraction-free digital notebook and document workspace designed for structured knowledge management.\n\n"
+            "### Workspace Layout:\n"
+            "* **Left Sidebar (Notebook Pages):** Browse all sections and pages. Add new pages, duplicate them, or navigate with a single click.\n"
+            "* **Center Pane (Markdown Editor):** Write, format, and edit notes with live syntax styling (headers, bold, lists, quotes, and tables).\n"
+            "* **Right Panel (Marginalia & Details):** Keep margin thoughts and quick reminders associated with each page, manage bookmarks, and review metrics.\n\n"
             "---\n\n"
-            "> *\"Organiza tus ideas con claridad y escribe con fluidez.\"*";
-        p1.marginalia = "Puedes usar este panel derecho para dejar ideas rápidas y recordatorios.";
+            "> *\"Clarity of thought begins with organized notes.\"*";
+        p1.marginalia = "Use this margin panel for quick ideas and task reminders.";
         ch1.pages.push_back(p1);
 
         Page p2;
-        p2.id = "p_atajos";
-        p2.title = "Atajos de Teclado y Consejos";
+        p2.id = "p_shortcuts";
+        p2.title = "Keyboard Shortcuts & Tips";
         p2.signTag = "IDEAS";
         p2.isBookmarked = true;
         p2.content =
-            "# Atajos Útiles\n\n"
-            "Optimiza tu flujo de trabajo con estos comandos rápidos:\n\n"
-            "* **Ctrl + S:** Guarda inmediatamente todos tus cambios y configuraciones.\n"
-            "* **Ctrl + N:** Crea una nueva hoja de notas al instante.\n"
-            "* **Flechas Izquierda / Derecha:** Navega secuencialmente entre páginas del documento.\n"
-            "* **Botón Volver a la Biblioteca:** Regresa a la estantería de documentos en cualquier momento.\n\n"
+            "# Essential Shortcuts\n\n"
+            "Speed up your workflow with these keyboard commands:\n\n"
+            "* **Ctrl + S:** Save all documents and settings immediately.\n"
+            "* **Ctrl + N:** Create a new page in the current section.\n"
+            "* **Ctrl + B:** Toggle between Library and Workspace views.\n"
+            "* **Ctrl + ,:** Open Settings & Preferences.\n"
+            "* **Left / Right Arrow:** Navigate sequentially between book pages in reader mode.\n\n"
             "---\n\n"
-            "### Formato Markdown:\n"
-            "Usa la barra de herramientas superior o escribe directamente `# Título`, `**negrita**`, `*cursiva*`, `- listas` y `1. tareas`.";
-        p2.marginalia = "El autoguardado está activo por defecto cada minuto.";
+            "### Markdown Quick Reference:\n"
+            "Use the top formatting toolbar or type standard Markdown: `# Heading`, `**bold**`, `*italic*`, `- lists`, and `> quote`.";
+        p2.marginalia = "Auto-save runs periodically in the background.";
         ch1.pages.push_back(p2);
 
         b1.chapters.push_back(ch1);
 
         Chapter ch2;
-        ch2.id = "ch_proyectos";
-        ch2.title = "Sección II: Notas de Proyectos";
-        ch2.description = "Espacio para tareas, objetivos e hitos.";
+        ch2.id = "ch_roadmap";
+        ch2.title = "Section II: Project Roadmap";
+        ch2.description = "Milestones, tasks, and deliverables.";
 
         Page p3;
         p3.id = "p_plan";
-        p3.title = "Plan de Trabajo y Objetivos";
+        p3.title = "Project Milestones";
         p3.signTag = "TASKS";
         p3.isBookmarked = false;
         p3.content =
-            "# Plan de Trabajo\n\n"
-            "### Objetivos Principales:\n"
-            "1. Definir los requerimientos iniciales del proyecto.\n"
-            "2. Estructurar los capítulos y módulos de trabajo.\n"
-            "3. Redactar los borradores y documentación clave.\n"
-            "4. Revisión final y exportación a Markdown.\n\n"
-            "### Tareas Pendientes:\n"
-            "* [ ] Revisar fuentes y referencias bibliográficas.\n"
-            "* [ ] Añadir marcadores a las páginas críticas.\n"
-            "* [ ] Compartir resumen con el equipo.";
-        p3.marginalia = "Hacer seguimiento semanal de los hitos completados.";
+            "# Project Roadmap\n\n"
+            "### Core Objectives:\n"
+            "1. Outline initial project specifications and scope.\n"
+            "2. Structure modules and technical documentation.\n"
+            "3. Draft implementation and review progress regularly.\n"
+            "4. Export final deliverables to PDF, EPUB, DOCX, or Markdown.\n\n"
+            "### Action Items:\n"
+            "* [ ] Review bibliography and source material.\n"
+            "* [ ] Bookmark critical reference pages.\n"
+            "* [ ] Share document summaries with the team.";
+        p3.marginalia = "Review milestone completion on a weekly basis.";
         ch2.pages.push_back(p3);
 
         b1.chapters.push_back(ch2);
         m_Books.push_back(b1);
     }
 
-    // 2. Cuaderno Personal de Ideas y Referencias
+    // 2. Personal Research & Knowledge Base
     {
         Book b2;
-        b2.id = "doc_ideas";
-        b2.title = "Cuaderno Personal de Ideas y Lecturas";
-        b2.subtitle = "Apuntes libres, resúmenes y referencias bibliográficas";
-        b2.author = "Usuario";
+        b2.id = "doc_research";
+        b2.title = "Knowledge Base & Research";
+        b2.subtitle = "Curated thoughts, literature highlights, and references";
+        b2.author = "User";
         b2.category = "Personal";
         b2.coverTheme = "Paper";
         b2.createdAt = GetCurrentTimestampStr();
         b2.updatedAt = b2.createdAt;
 
         Chapter ch1;
-        ch1.id = "ch_lecturas";
-        ch1.title = "Sección I: Citas y Resúmenes";
-        ch1.description = "Fragmentos interesantes extraídos de lecturas.";
+        ch1.id = "ch_literature";
+        ch1.title = "Section I: Curated Insights";
+        ch1.description = "Key excerpts and ideas from reading sessions.";
 
         Page p1;
-        p1.id = "p_resumen1";
-        p1.title = "Apuntes de Lectura";
+        p1.id = "p_quote1";
+        p1.title = "Literature Notes";
         p1.signTag = "STUDY";
         p1.isBookmarked = true;
         p1.content =
-            "# Citas y Reflexiones\n\n"
-            "> \"Escribir es la pintura de la voz.\"\n"
+            "# Thoughts & Reflections\n\n"
+            "> \"Writing is the painting of the voice.\"\n"
             "> — Voltaire\n\n"
-            "Anota aquí pasajes destacados, ideas inspiradoras y conceptos que desees conservar para tus proyectos.";
-        p1.marginalia = "Recordar citar siempre la fuente original.";
+            "Record key insights, inspiring quotations, and foundational concepts for your ongoing projects.";
+        p1.marginalia = "Remember to cite original sources and publication dates.";
         ch1.pages.push_back(p1);
 
         b2.chapters.push_back(ch1);

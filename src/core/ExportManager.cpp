@@ -20,7 +20,7 @@ static std::string SanitizeFilename(const std::string& name) {
             c = '_';
         }
     }
-    return safe.empty() ? "Documento" : safe;
+    return safe.empty() ? "Document" : safe;
 }
 
 const char* ExportManager::GetFormatExtension(ExportFormat format) {
@@ -35,11 +35,11 @@ const char* ExportManager::GetFormatExtension(ExportFormat format) {
 
 const char* ExportManager::GetFormatName(ExportFormat format) {
     switch (format) {
-        case ExportFormat::EPUB:     return "Libro Digital EPUB (.epub)";
-        case ExportFormat::PDF:      return "Documento PDF (.pdf)";
+        case ExportFormat::EPUB:     return "Digital Book EPUB (.epub)";
+        case ExportFormat::PDF:      return "PDF Document (.pdf)";
         case ExportFormat::DOCX:     return "Microsoft Word DOCX (.docx)";
         case ExportFormat::Markdown: return "Markdown (.md)";
-        default:                     return "Texto Plano";
+        default:                     return "Plain Text";
     }
 }
 
@@ -135,7 +135,7 @@ bool ExportManager::ExportCurrentPage(const Book& book, const Page& page, Export
 
     json jb;
     jb["title"] = page.title;
-    jb["subtitle"] = "De: " + book.title;
+    jb["subtitle"] = "From: " + book.title;
     jb["author"] = book.author;
     jb["category"] = page.signTag;
     jb["updatedAt"] = page.updatedAt;

@@ -48,16 +48,16 @@ void LibraryPanel::Render() {
 void LibraryPanel::RenderTopBar() {
     ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
-    // Título de la sección
-    ImGui::TextColored(ToVec4(theme.accentLight), "📚 BIBLIOTECA DE DOCUMENTOS Y CUADERNOS");
-    ImGui::TextColored(ToVec4(theme.textDim), "Selecciona un documento para abrirlo y comenzar a editar o crea uno nuevo.");
+    // Section title
+    ImGui::TextColored(ToVec4(theme.accentLight), "DOCUMENT & NOTEBOOK LIBRARY");
+    ImGui::TextColored(ToVec4(theme.textDim), "Select a notebook to open and edit, or create a new one.");
     ImGui::Spacing();
 
-    // Buscador y Botón Nuevo
+    // Search input and New Notebook button
     float availW = ImGui::GetContentRegionAvail().x;
-    float btnWidth = 190.0f;
+    float btnWidth = 180.0f;
     bool hasQuery = (m_SearchQuery[0] != '\0');
-    float clearBtnWidth = hasQuery ? 80.0f : 0.0f;
+    float clearBtnWidth = hasQuery ? 75.0f : 0.0f;
     float spacing = ImGui::GetStyle().ItemSpacing.x;
 
     float searchWidth = availW - btnWidth - spacing - (hasQuery ? (clearBtnWidth + spacing) : 0.0f) - 4.0f;
@@ -66,11 +66,11 @@ void LibraryPanel::RenderTopBar() {
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 8));
 
     ImGui::SetNextItemWidth(searchWidth);
-    ImGui::InputTextWithHint("##SearchInput", "🔍 Buscar en todos los cuadernos y hojas...", m_SearchQuery, sizeof(m_SearchQuery));
+    ImGui::InputTextWithHint("##SearchInput", "Search in all notebooks and pages...", m_SearchQuery, sizeof(m_SearchQuery));
 
     if (hasQuery) {
         ImGui::SameLine();
-        if (ImGui::Button("✕ Limpiar", ImVec2(clearBtnWidth, 0.0f))) {
+        if (ImGui::Button("Clear", ImVec2(clearBtnWidth, 0.0f))) {
             m_SearchQuery[0] = '\0';
         }
     }
@@ -78,7 +78,7 @@ void LibraryPanel::RenderTopBar() {
     ImGui::SameLine();
     ImGui::PushStyleColor(ImGuiCol_Button, ToVec4(theme.accent));
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.1f, 0.08f, 0.05f, 1.0f));
-    if (ImGui::Button("+ Nuevo Documento", ImVec2(btnWidth, 0.0f))) {
+    if (ImGui::Button("+ New Notebook", ImVec2(btnWidth, 0.0f))) {
         m_OpenNewDocModal = true;
     }
     ImGui::PopStyleColor(2);
@@ -90,11 +90,11 @@ void LibraryPanel::RenderSearchResults() {
     ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
     auto results = BookRepository::Get().Search(m_SearchQuery);
 
-    ImGui::TextColored(ToVec4(theme.accentLight), "Resultados de búsqueda (%zu):", results.size());
+    ImGui::TextColored(ToVec4(theme.accentLight), "Search results (%zu):", results.size());
     ImGui::Spacing();
 
     if (results.empty()) {
-        ImGui::TextColored(ToVec4(theme.textDim), "No se hallaron coincidencias en ningún documento.");
+        ImGui::TextColored(ToVec4(theme.textDim), "No matching documents or pages found.");
         return;
     }
 
@@ -103,14 +103,14 @@ void LibraryPanel::RenderSearchResults() {
         ImGui::PushID((int)i);
 
         ImGui::BeginChild("##ResultCard", ImVec2(ImGui::GetContentRegionAvail().x, 70.0f), true);
-        ImGui::TextColored(ToVec4(theme.accent), "📄 %s", r.pageTitle.c_str());
+        ImGui::TextColored(ToVec4(theme.accent), "%s", r.pageTitle.c_str());
         ImGui::SameLine();
-        ImGui::TextColored(ToVec4(theme.textDim), "(Documento: %s > %s)", r.bookTitle.c_str(), r.chapterTitle.c_str());
+        ImGui::TextColored(ToVec4(theme.textDim), "(Notebook: %s > %s)", r.bookTitle.c_str(), r.chapterTitle.c_str());
 
         ImGui::TextColored(ToVec4(theme.textFaint), "   %s", r.matchSnippet.c_str());
 
         ImGui::SameLine(ImGui::GetContentRegionAvail().x - 130.0f);
-        if (ImGui::Button("Abrir Hoja", ImVec2(120.0f, 24.0f))) {
+        if (ImGui::Button("Open Page", ImVec2(120.0f, 24.0f))) {
             BookRepository::Get().SetActiveIndices(r.bookIdx, r.chapterIdx, r.pageIdx);
             if (m_OnOpenDocument) {
                 m_OnOpenDocument(r.bookIdx);
@@ -147,22 +147,22 @@ void LibraryPanel::RenderDocumentGrid() {
             ImGui::PushStyleColor(ImGuiCol_Border, ToVec4(theme.border));
             ImGui::PushStyleColor(ImGuiCol_ChildBg, ToVec4(theme.surface0));
 
-            // Tarjeta de documento (ancho 0.0f = fill column)
+            // Document card
             ImVec2 cardSize(0.0f, cardH);
             bool cardClicked = false;
 
             ImGui::BeginChild("##DocCard", cardSize, true, ImGuiWindowFlags_NoScrollbar);
 
-            // Título del documento
+            // Document title
             ImGui::Spacing();
-            ImGui::TextColored(ToVec4(theme.accentLight), "📖 %s", b.title.c_str());
+            ImGui::TextColored(ToVec4(theme.accentLight), "%s", b.title.c_str());
 
-            // Subtítulo con wrapping
+            // Subtitle with text wrapping
             ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x);
             if (!b.subtitle.empty()) {
                 ImGui::TextColored(ToVec4(theme.textDim), "%s", b.subtitle.c_str());
             } else {
-                ImGui::TextColored(ToVec4(theme.textFaint), "Sin descripción adicional");
+                ImGui::TextColored(ToVec4(theme.textFaint), "No description provided");
             }
             ImGui::PopTextWrapPos();
 
@@ -170,73 +170,73 @@ void LibraryPanel::RenderDocumentGrid() {
             ImGui::Separator();
             ImGui::Spacing();
 
-            // Metadatos
-            ImGui::TextColored(ToVec4(theme.textDim), "Secciones: %zu  |  Hojas: %d  |  Palabras: %d",
+            // Metadata
+            ImGui::TextColored(ToVec4(theme.textDim), "Sections: %zu  |  Pages: %d  |  Words: %d",
                                b.chapters.size(), b.GetTotalPages(), b.GetTotalWords());
-            ImGui::TextColored(ToVec4(theme.textFaint), "Autor: %s", b.author.c_str());
+            ImGui::TextColored(ToVec4(theme.textFaint), "Author: %s", b.author.c_str());
 
             ImGui::Spacing();
             ImGui::Spacing();
 
-            // Botones de acción en la parte inferior de la tarjeta
+            // Action buttons
             float btnH = 28.0f * fontScale;
             float totalBtnW = ImGui::GetContentRegionAvail().x;
             float optionsW = std::clamp(totalBtnW * 0.35f, 75.0f, 105.0f);
             float openW = totalBtnW - optionsW - ImGui::GetStyle().ItemSpacing.x;
 
             ImGui::PushStyleColor(ImGuiCol_Button, ToVec4(theme.surface1));
-            if (ImGui::Button("Abrir Documento", ImVec2(openW, btnH))) {
+            if (ImGui::Button("Open Notebook", ImVec2(openW, btnH))) {
                 cardClicked = true;
             }
             ImGui::PopStyleColor();
 
             ImGui::SameLine();
 
-            // Opciones
-            if (ImGui::Button("⋯ Opciones", ImVec2(optionsW, btnH))) {
+            // Options popup
+            if (ImGui::Button("Options", ImVec2(optionsW, btnH))) {
                 ImGui::OpenPopup("##DocOptionsPopup");
             }
 
             if (ImGui::BeginPopup("##DocOptionsPopup")) {
-                if (ImGui::MenuItem("Abrir")) {
+                if (ImGui::MenuItem("Open")) {
                     cardClicked = true;
                 }
-                if (ImGui::MenuItem("Renombrar...")) {
+                if (ImGui::MenuItem("Rename...")) {
                     m_DocToRename = i;
                     strncpy(m_RenameDocTitle, b.title.c_str(), sizeof(m_RenameDocTitle) - 1);
                     m_RenameDocTitle[sizeof(m_RenameDocTitle) - 1] = '\0';
                     m_OpenRenameDocModal = true;
                 }
-                if (ImGui::BeginMenu("Exportar Documento...")) {
-                    if (ImGui::MenuItem("Libro Digital EPUB (.epub)")) {
+                if (ImGui::BeginMenu("Export Notebook...")) {
+                    if (ImGui::MenuItem("Digital Book (.epub)")) {
                         std::string out;
                         if (ExportManager::ExportBook(b, ExportFormat::EPUB, out)) {
-                            m_ExportStatusMsg = "Documento exportado exitosamente a EPUB";
+                            m_ExportStatusMsg = "Notebook exported successfully to EPUB";
                             m_LastExportedFile = out;
                         } else {
-                            m_ExportStatusMsg = "Error al exportar el documento a EPUB.";
+                            m_ExportStatusMsg = "Failed to export notebook to EPUB.";
                             m_LastExportedFile = "";
                         }
                         m_ShowExportModal = true;
                     }
-                    if (ImGui::MenuItem("Documento PDF (.pdf)")) {
+                    if (ImGui::MenuItem("PDF Document (.pdf)")) {
                         std::string out;
                         if (ExportManager::ExportBook(b, ExportFormat::PDF, out)) {
-                            m_ExportStatusMsg = "Documento exportado exitosamente a PDF";
+                            m_ExportStatusMsg = "Notebook exported successfully to PDF";
                             m_LastExportedFile = out;
                         } else {
-                            m_ExportStatusMsg = "Error al exportar el documento a PDF.";
+                            m_ExportStatusMsg = "Failed to export notebook to PDF.";
                             m_LastExportedFile = "";
                         }
                         m_ShowExportModal = true;
                     }
-                    if (ImGui::MenuItem("Microsoft Word DOCX (.docx)")) {
+                    if (ImGui::MenuItem("Microsoft Word (.docx)")) {
                         std::string out;
                         if (ExportManager::ExportBook(b, ExportFormat::DOCX, out)) {
-                            m_ExportStatusMsg = "Documento exportado exitosamente a DOCX";
+                            m_ExportStatusMsg = "Notebook exported successfully to DOCX";
                             m_LastExportedFile = out;
                         } else {
-                            m_ExportStatusMsg = "Error al exportar el documento a DOCX.";
+                            m_ExportStatusMsg = "Failed to export notebook to DOCX.";
                             m_LastExportedFile = "";
                         }
                         m_ShowExportModal = true;
@@ -244,10 +244,10 @@ void LibraryPanel::RenderDocumentGrid() {
                     if (ImGui::MenuItem("Markdown (.md)")) {
                         std::string out;
                         if (ExportManager::ExportBook(b, ExportFormat::Markdown, out)) {
-                            m_ExportStatusMsg = "Documento exportado exitosamente a Markdown";
+                            m_ExportStatusMsg = "Notebook exported successfully to Markdown";
                             m_LastExportedFile = out;
                         } else {
-                            m_ExportStatusMsg = "Error al exportar el documento a Markdown.";
+                            m_ExportStatusMsg = "Failed to export notebook to Markdown.";
                             m_LastExportedFile = "";
                         }
                         m_ShowExportModal = true;
@@ -256,7 +256,7 @@ void LibraryPanel::RenderDocumentGrid() {
                 }
                 if (books.size() > 1) {
                     ImGui::Separator();
-                    if (ImGui::MenuItem("Eliminar Documento")) {
+                    if (ImGui::MenuItem("Delete Notebook")) {
                         repo.DeleteBook(i);
                     }
                 }
@@ -281,7 +281,7 @@ void LibraryPanel::RenderDocumentGrid() {
             ImGui::PopID();
         }
 
-        // Tarjeta para crear nuevo documento al final
+        // New notebook card at end
         ImGui::TableNextColumn();
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 8.0f);
         ImGui::PushStyleColor(ImGuiCol_Border, ToVec4(theme.borderFaint));
@@ -295,8 +295,8 @@ void LibraryPanel::RenderDocumentGrid() {
 
         float availInside = ImGui::GetContentRegionAvail().x;
         const char* plusText = "+";
-        const char* labelText = "Crear Nuevo Documento";
-        const char* subText = "Comenzar un cuaderno en blanco";
+        const char* labelText = "Create New Notebook";
+        const char* subText = "Start with a clean blank notebook";
 
         float wPlus = ImGui::CalcTextSize(plusText).x;
         float wLabel = ImGui::CalcTextSize(labelText).x;
@@ -314,7 +314,7 @@ void LibraryPanel::RenderDocumentGrid() {
         ImGui::Spacing();
         float btnW = std::clamp(availInside - 40.0f, 160.0f, 220.0f);
         ImGui::SetCursorPosX((availInside - btnW) * 0.5f);
-        if (ImGui::Button("Crear Cuaderno", ImVec2(btnW, 30.0f * fontScale))) {
+        if (ImGui::Button("Create Notebook", ImVec2(btnW, 30.0f * fontScale))) {
             m_OpenNewDocModal = true;
         }
 
@@ -332,22 +332,22 @@ void LibraryPanel::RenderDocumentGrid() {
 
 void LibraryPanel::RenderNewDocumentModal() {
     if (m_OpenNewDocModal) {
-        ImGui::OpenPopup("Crear Nuevo Documento");
+        ImGui::OpenPopup("Create New Notebook");
         m_OpenNewDocModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Crear Nuevo Documento", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Configura los detalles del nuevo cuaderno o documento:");
+    if (ImGui::BeginPopupModal("Create New Notebook", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Configure details for the new notebook or document:");
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::InputText("Título", m_NewDocTitle, sizeof(m_NewDocTitle));
-        ImGui::InputText("Descripción", m_NewDocSubtitle, sizeof(m_NewDocSubtitle));
-        ImGui::InputText("Autor", m_NewDocAuthor, sizeof(m_NewDocAuthor));
+        ImGui::InputText("Title", m_NewDocTitle, sizeof(m_NewDocTitle));
+        ImGui::InputText("Description", m_NewDocSubtitle, sizeof(m_NewDocSubtitle));
+        ImGui::InputText("Author", m_NewDocAuthor, sizeof(m_NewDocAuthor));
         ImGui::Spacing();
 
-        if (ImGui::Button("Crear y Abrir", ImVec2(140, 32))) {
+        if (ImGui::Button("Create & Open", ImVec2(140, 32))) {
             auto& repo = BookRepository::Get();
             repo.AddBook(m_NewDocTitle, m_NewDocSubtitle, m_NewDocAuthor, "Dark");
             int newIdx = (int)repo.GetBooks().size() - 1;
@@ -358,7 +358,7 @@ void LibraryPanel::RenderNewDocumentModal() {
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancelar", ImVec2(90, 32))) {
+        if (ImGui::Button("Cancel", ImVec2(90, 32))) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -368,18 +368,18 @@ void LibraryPanel::RenderNewDocumentModal() {
 
 void LibraryPanel::RenderRenameDocumentModal() {
     if (m_OpenRenameDocModal) {
-        ImGui::OpenPopup("Renombrar Documento");
+        ImGui::OpenPopup("Rename Notebook");
         m_OpenRenameDocModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Renombrar Documento", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Escribe el nuevo título para este documento:");
+    if (ImGui::BeginPopupModal("Rename Notebook", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Enter the new title for this notebook:");
         ImGui::Spacing();
 
-        ImGui::InputText("Nuevo Título", m_RenameDocTitle, sizeof(m_RenameDocTitle));
+        ImGui::InputText("New Title", m_RenameDocTitle, sizeof(m_RenameDocTitle));
         ImGui::Spacing();
 
-        if (ImGui::Button("Guardar", ImVec2(100, 30))) {
+        if (ImGui::Button("Save", ImVec2(100, 30))) {
             auto& repo = BookRepository::Get();
             auto& books = repo.GetBooks();
             if (m_DocToRename >= 0 && m_DocToRename < (int)books.size()) {
@@ -389,7 +389,7 @@ void LibraryPanel::RenderRenameDocumentModal() {
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancelar", ImVec2(90, 30))) {
+        if (ImGui::Button("Cancel", ImVec2(90, 30))) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -401,23 +401,23 @@ void LibraryPanel::RenderExportModal() {
     ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
     if (m_ShowExportModal) {
-        ImGui::OpenPopup("Resultado de Exportación##LibModal");
+        ImGui::OpenPopup("Export Result##LibModal");
         m_ShowExportModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Resultado de Exportación##LibModal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopupModal("Export Result##LibModal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::TextColored(ToVec4(theme.accentLight), "%s", m_ExportStatusMsg.c_str());
         if (!m_LastExportedFile.empty()) {
             ImGui::Spacing();
-            ImGui::TextColored(ToVec4(theme.textDim), "Archivo guardado en:");
+            ImGui::TextColored(ToVec4(theme.textDim), "File saved to:");
             ImGui::TextColored(ToVec4(theme.textPrimary), "%s", m_LastExportedFile.c_str());
             ImGui::Spacing();
-            if (ImGui::Button("📁 Abrir Carpeta", ImVec2(130, 30))) {
+            if (ImGui::Button("Open Folder", ImVec2(130, 30))) {
                 ExportManager::OpenExportFolder(m_LastExportedFile);
             }
             ImGui::SameLine();
         }
-        if (ImGui::Button("Aceptar", ImVec2(100, 30))) {
+        if (ImGui::Button("OK", ImVec2(100, 30))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();

@@ -130,10 +130,10 @@ int main(int argc, char** argv) {
     WitcherNotes::Core::AppPaths::ChangeToExecutableDirectory();
     WitcherNotes::Core::AppPaths::EnsureDirectories();
 
-    std::cout << "[Notes] Iniciando Cuaderno de Notas...\n";
+    std::cout << "[WitcherNotes] Starting application...\n";
 
     if (!glfwInit()) {
-        std::cerr << "[Notes] Falló glfwInit()\n";
+        std::cerr << "[WitcherNotes] Failed to initialize GLFW\n";
         return -1;
     }
 
@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 
     GLFWwindow* mainWindow = CreateMainWindow(mainW, mainH);
     if (!mainWindow) {
-        std::cerr << "[Notes] Error crítico: no se pudo crear la ventana principal.\n";
+        std::cerr << "[WitcherNotes] Critical error: failed to create main window.\n";
         glfwTerminate();
         return -1;
     }
@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
     glewExperimental = GL_TRUE;
     GLenum glewStatus = glewInit();
     if (glewStatus != GLEW_OK && glewStatus != GLEW_ERROR_NO_GLX_DISPLAY) {
-        std::cerr << "[Notes] Advertencia en glewInit: " << glewGetErrorString(glewStatus) << "\n";
+        std::cerr << "[WitcherNotes] Warning in glewInit: " << glewGetErrorString(glewStatus) << "\n";
     }
 
     // Inicializar ImGui
@@ -184,7 +184,7 @@ int main(int argc, char** argv) {
     glfwShowWindow(mainWindow);
     glfwFocusWindow(mainWindow);
 
-    std::cout << "[Notes] Aplicación lista. Abriendo en vista Biblioteca...\n";
+    std::cout << "[WitcherNotes] Application ready. Opening Library view...\n";
 
     // Bucle Principal
     while (!glfwWindowShouldClose(mainWindow)) {
@@ -210,7 +210,7 @@ int main(int argc, char** argv) {
         glfwSwapBuffers(mainWindow);
     }
 
-    std::cout << "[Notes] Guardando y cerrando...\n";
+    std::cout << "[WitcherNotes] Saving and shutting down...\n";
     uiManager.Shutdown();
 
     ImGui_ImplOpenGL3_Shutdown();

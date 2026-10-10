@@ -25,25 +25,25 @@ void TocBookmarksPanel::Render() {
     ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
     if (!book) {
-        ImGui::TextColored(ToVec4(theme.textDim), "No hay ningún documento activo.");
+        ImGui::TextColored(ToVec4(theme.textDim), "No active document.");
         return;
     }
 
     if (ImGui::BeginTabBar("##RightColumnTabs")) {
-        // Pestaña 1: Notas y Apuntes
-        if (ImGui::BeginTabItem("✍ Notas")) {
+        // Tab 1: Notes and marginalia
+        if (ImGui::BeginTabItem("Notes")) {
             RenderNotesSection();
             ImGui::EndTabItem();
         }
 
-        // Pestaña 2: Marcadores
-        if (ImGui::BeginTabItem("★ Marcadores")) {
+        // Tab 2: Bookmarks
+        if (ImGui::BeginTabItem("Bookmarks")) {
             RenderBookmarksSection();
             ImGui::EndTabItem();
         }
 
-        // Pestaña 3: Información
-        if (ImGui::BeginTabItem("ℹ Info")) {
+        // Tab 3: Details & Info
+        if (ImGui::BeginTabItem("Details")) {
             RenderInfoSection();
             ImGui::EndTabItem();
         }
@@ -58,7 +58,7 @@ void TocBookmarksPanel::RenderNotesSection() {
     ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
     if (!page) {
-        ImGui::TextColored(ToVec4(theme.textDim), "Selecciona una hoja para agregar notas.");
+        ImGui::TextColored(ToVec4(theme.textDim), "Select a page to add notes.");
         return;
     }
 
@@ -76,8 +76,8 @@ void TocBookmarksPanel::RenderNotesSection() {
     }
 
     ImGui::Spacing();
-    ImGui::TextColored(ToVec4(theme.accentLight), "✍ Notas al Margen / Apuntes Rápidos");
-    ImGui::TextColored(ToVec4(theme.textDim), "Anotaciones asociadas a: '%s'", page->title.c_str());
+    ImGui::TextColored(ToVec4(theme.accentLight), "Marginalia & Quick Notes");
+    ImGui::TextColored(ToVec4(theme.textDim), "Notes linked to: '%s'", page->title.c_str());
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
@@ -89,7 +89,7 @@ void TocBookmarksPanel::RenderNotesSection() {
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 8));
 
     if (ImGui::InputTextMultiline("##MarginaliaInput", m_MarginaliaBuffer, sizeof(m_MarginaliaBuffer),
-                                  ImVec2(ImGui::GetContentRegionAvail().x, availH))) {
+                                   ImVec2(ImGui::GetContentRegionAvail().x, availH))) {
         page->marginalia = m_MarginaliaBuffer;
         repo.MarkDirty();
     }
@@ -107,16 +107,16 @@ void TocBookmarksPanel::RenderBookmarksSection() {
     if (!book) return;
 
     ImGui::Spacing();
-    ImGui::TextColored(ToVec4(theme.accentLight), "★ Páginas Marcadas");
+    ImGui::TextColored(ToVec4(theme.accentLight), "Bookmarked Pages");
     ImGui::Spacing();
 
-    // Botón para alternar marcador de la página activa
+    // Toggle bookmark for active page
     if (page) {
         if (page->isBookmarked) {
             ImGui::PushStyleColor(ImGuiCol_Button, ToVec4(theme.accent));
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.1f, 0.08f, 0.05f, 1.0f));
         }
-        if (ImGui::Button(page->isBookmarked ? "★ Quitar Marcador de esta hoja" : "☆ Marcar esta hoja como favorita",
+        if (ImGui::Button(page->isBookmarked ? "Remove Bookmark" : "Bookmark this Page",
                           ImVec2(ImGui::GetContentRegionAvail().x, 32.0f))) {
             page->isBookmarked = !page->isBookmarked;
             repo.MarkDirty();
@@ -130,7 +130,7 @@ void TocBookmarksPanel::RenderBookmarksSection() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Lista de todas las páginas marcadas
+    // List of all bookmarked pages
     int bookmarkCount = 0;
     for (int c = 0; c < (int)book->chapters.size(); ++c) {
         const auto& ch = book->chapters[c];
@@ -141,13 +141,13 @@ void TocBookmarksPanel::RenderBookmarksSection() {
                 int globalPg = book->GetGlobalPageIndex(c, p) + 1;
 
                 ImGui::PushID(bookmarkCount);
-                std::string label = "★ Pág. " + std::to_string(globalPg) + ": " + pg.title;
+                std::string label = "Page " + std::to_string(globalPg) + ": " + pg.title;
 
                 bool isCurrent = (c == repo.GetActiveChapterIndex() && p == repo.GetActivePageIndex());
                 if (ImGui::Selectable(label.c_str(), isCurrent)) {
                     repo.SetActiveIndices(repo.GetActiveBookIndex(), c, p);
                 }
-                ImGui::TextColored(ToVec4(theme.textFaint), "    Sección: %s", ch.title.c_str());
+                ImGui::TextColored(ToVec4(theme.textFaint), "    Section: %s", ch.title.c_str());
                 ImGui::Spacing();
                 ImGui::PopID();
             }
@@ -155,8 +155,8 @@ void TocBookmarksPanel::RenderBookmarksSection() {
     }
 
     if (bookmarkCount == 0) {
-        ImGui::TextColored(ToVec4(theme.textDim), "No tienes páginas marcadas todavía.");
-        ImGui::TextColored(ToVec4(theme.textFaint), "Usa el botón de arriba para fijar accesos directos a hojas importantes.");
+        ImGui::TextColored(ToVec4(theme.textDim), "No pages bookmarked yet.");
+        ImGui::TextColored(ToVec4(theme.textFaint), "Use the button above to bookmark important pages.");
     }
 }
 
@@ -170,19 +170,19 @@ void TocBookmarksPanel::RenderInfoSection() {
     if (!book || !page) return;
 
     ImGui::Spacing();
-    ImGui::TextColored(ToVec4(theme.accentLight), "ℹ INFORMACIÓN DEL DOCUMENTO");
+    ImGui::TextColored(ToVec4(theme.accentLight), "DOCUMENT DETAILS");
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Categoría / Etiqueta de la hoja actual
-    ImGui::TextColored(ToVec4(theme.textDim), "Etiqueta de la Hoja:");
+    // Page Category tag
+    ImGui::TextColored(ToVec4(theme.textDim), "Page Category:");
     const char* categories[] = {
         "GENERAL", "IDEAS", "DRAFT", "IMPORTANT", "REFERENCE", "TASKS", "PROJECT", "STUDY"
     };
     const char* displayNames[] = {
-        "Nota General", "Ideas y Bocetos", "Borrador", "Prioritario / Importante",
-        "Referencia", "Tareas / To-Do", "Proyecto", "Estudio"
+        "General Note", "Ideas & Brainstorm", "Draft", "Priority / Important",
+        "Reference", "Tasks / To-Do", "Project", "Study & Research"
     };
 
     int curCatIdx = 0;
@@ -203,66 +203,66 @@ void TocBookmarksPanel::RenderInfoSection() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Estadísticas
-    ImGui::TextColored(ToVec4(theme.textPrimary), "Documento: %s", book->title.c_str());
-    ImGui::TextColored(ToVec4(theme.textDim), "Autor: %s", book->author.c_str());
-    ImGui::TextColored(ToVec4(theme.textDim), "Sección actual: %s", ch ? ch->title.c_str() : "-");
-    ImGui::TextColored(ToVec4(theme.textDim), "Total de secciones: %zu", book->chapters.size());
-    ImGui::TextColored(ToVec4(theme.textDim), "Total de hojas: %d", book->GetTotalPages());
-    ImGui::TextColored(ToVec4(theme.textDim), "Palabras del documento: %d", book->GetTotalWords());
-    ImGui::TextColored(ToVec4(theme.textFaint), "Creado: %s", page->createdAt.c_str());
+    // Statistics
+    ImGui::TextColored(ToVec4(theme.textPrimary), "Document: %s", book->title.c_str());
+    ImGui::TextColored(ToVec4(theme.textDim), "Author: %s", book->author.c_str());
+    ImGui::TextColored(ToVec4(theme.textDim), "Current section: %s", ch ? ch->title.c_str() : "-");
+    ImGui::TextColored(ToVec4(theme.textDim), "Total sections: %zu", book->chapters.size());
+    ImGui::TextColored(ToVec4(theme.textDim), "Total pages: %d", book->GetTotalPages());
+    ImGui::TextColored(ToVec4(theme.textDim), "Total words: %d", book->GetTotalWords());
+    ImGui::TextColored(ToVec4(theme.textFaint), "Created: %s", page->createdAt.c_str());
 
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Exportación Multi-formato
-    ImGui::TextColored(ToVec4(theme.accent), "Exportar Hoja Actual:");
+    // Export current page
+    ImGui::TextColored(ToVec4(theme.accent), "Export Current Page:");
     float halfBtn = (ImGui::GetContentRegionAvail().x - 6.0f) * 0.5f;
 
-    if (ImGui::Button("📄 PDF", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("PDF", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportCurrentPage(*book, *page, ExportFormat::PDF, out)) {
-            m_ExportStatusMsg = "Hoja exportada exitosamente a PDF";
+            m_ExportStatusMsg = "Page exported successfully to PDF";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar la hoja a PDF.";
+            m_ExportStatusMsg = "Failed to export page to PDF.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("📚 EPUB", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("EPUB", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportCurrentPage(*book, *page, ExportFormat::EPUB, out)) {
-            m_ExportStatusMsg = "Hoja exportada exitosamente a EPUB";
+            m_ExportStatusMsg = "Page exported successfully to EPUB";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar la hoja a EPUB.";
+            m_ExportStatusMsg = "Failed to export page to EPUB.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
 
-    if (ImGui::Button("📝 Word (DOCX)", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("Word (DOCX)", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportCurrentPage(*book, *page, ExportFormat::DOCX, out)) {
-            m_ExportStatusMsg = "Hoja exportada exitosamente a DOCX";
+            m_ExportStatusMsg = "Page exported successfully to DOCX";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar la hoja a DOCX.";
+            m_ExportStatusMsg = "Failed to export page to DOCX.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("📃 Markdown", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("Markdown", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportCurrentPage(*book, *page, ExportFormat::Markdown, out)) {
-            m_ExportStatusMsg = "Hoja exportada exitosamente a Markdown";
+            m_ExportStatusMsg = "Page exported successfully to Markdown";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar la hoja a Markdown.";
+            m_ExportStatusMsg = "Failed to export page to Markdown.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
@@ -272,79 +272,79 @@ void TocBookmarksPanel::RenderInfoSection() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    ImGui::TextColored(ToVec4(theme.accent), "Exportar Documento Completo:");
-    if (ImGui::Button("📄 Cuaderno a PDF", ImVec2(halfBtn, 28.0f))) {
+    ImGui::TextColored(ToVec4(theme.accent), "Export Entire Notebook:");
+    if (ImGui::Button("Notebook to PDF", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportBook(*book, ExportFormat::PDF, out)) {
-            m_ExportStatusMsg = "Cuaderno exportado exitosamente a PDF";
+            m_ExportStatusMsg = "Notebook exported successfully to PDF";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar el cuaderno a PDF.";
+            m_ExportStatusMsg = "Failed to export notebook to PDF.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("📚 Cuaderno a EPUB", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("Notebook to EPUB", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportBook(*book, ExportFormat::EPUB, out)) {
-            m_ExportStatusMsg = "Cuaderno exportado exitosamente a EPUB";
+            m_ExportStatusMsg = "Notebook exported successfully to EPUB";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar el cuaderno a EPUB.";
+            m_ExportStatusMsg = "Failed to export notebook to EPUB.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
 
-    if (ImGui::Button("📝 Cuaderno a DOCX", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("Notebook to DOCX", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportBook(*book, ExportFormat::DOCX, out)) {
-            m_ExportStatusMsg = "Cuaderno exportado exitosamente a DOCX";
+            m_ExportStatusMsg = "Notebook exported successfully to DOCX";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar el cuaderno a DOCX.";
+            m_ExportStatusMsg = "Failed to export notebook to DOCX.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("📃 Cuaderno a MD", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("Notebook to MD", ImVec2(halfBtn, 28.0f))) {
         std::string out;
         if (ExportManager::ExportBook(*book, ExportFormat::Markdown, out)) {
-            m_ExportStatusMsg = "Cuaderno exportado exitosamente a Markdown";
+            m_ExportStatusMsg = "Notebook exported successfully to Markdown";
             m_LastExportedFile = out;
         } else {
-            m_ExportStatusMsg = "Error al exportar el cuaderno a Markdown.";
+            m_ExportStatusMsg = "Failed to export notebook to Markdown.";
             m_LastExportedFile = "";
         }
         m_ShowExportModal = true;
     }
 
     ImGui::Spacing();
-    if (ImGui::Button("📁 Abrir Carpeta de Exportaciones", ImVec2(ImGui::GetContentRegionAvail().x, 26.0f))) {
+    if (ImGui::Button("Open Exports Folder", ImVec2(ImGui::GetContentRegionAvail().x, 26.0f))) {
         ExportManager::OpenExportFolder(AppPaths::GetBackupsDir());
     }
 
-    // Modal de estado de exportación
+    // Export status modal
     if (m_ShowExportModal) {
-        ImGui::OpenPopup("Resultado de Exportación##InfoModal");
+        ImGui::OpenPopup("Export Result##InfoModal");
         m_ShowExportModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Resultado de Exportación##InfoModal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopupModal("Export Result##InfoModal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::TextColored(ToVec4(theme.accentLight), "%s", m_ExportStatusMsg.c_str());
         if (!m_LastExportedFile.empty()) {
             ImGui::Spacing();
-            ImGui::TextColored(ToVec4(theme.textDim), "Archivo guardado en:");
+            ImGui::TextColored(ToVec4(theme.textDim), "File saved to:");
             ImGui::TextColored(ToVec4(theme.textPrimary), "%s", m_LastExportedFile.c_str());
             ImGui::Spacing();
-            if (ImGui::Button("📁 Abrir Carpeta", ImVec2(130, 30))) {
+            if (ImGui::Button("Open Folder", ImVec2(130, 30))) {
                 ExportManager::OpenExportFolder(m_LastExportedFile);
             }
             ImGui::SameLine();
         }
-        if (ImGui::Button("Aceptar", ImVec2(100, 30))) {
+        if (ImGui::Button("OK", ImVec2(100, 30))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();

@@ -72,7 +72,7 @@ void UIManager::RenderAll() {
     }
     if (ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_N)) {
         if (m_CurrentScreen == AppScreen::DocumentWorkspace) {
-            repo.AddPage("Nueva Hoja", "GENERAL");
+            repo.AddPage("New Page", "GENERAL");
         }
     }
     if (ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_B)) {
@@ -103,17 +103,17 @@ void UIManager::RenderAll() {
 
     // Renderizar barra de menús superior
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("Archivo")) {
-            if (ImGui::MenuItem("Biblioteca de Cuadernos", "Ctrl+B", m_CurrentScreen == AppScreen::Library)) {
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Notebook Library", "Ctrl+B", m_CurrentScreen == AppScreen::Library)) {
                 m_CurrentScreen = AppScreen::Library;
             }
-            if (ImGui::MenuItem("Nueva Hoja", "Ctrl+N")) {
+            if (ImGui::MenuItem("New Page", "Ctrl+N")) {
                 if (m_CurrentScreen == AppScreen::DocumentWorkspace) {
-                    repo.AddPage("Nueva Hoja", "GENERAL");
+                    repo.AddPage("New Page", "GENERAL");
                 }
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Guardar Todo", "Ctrl+S")) {
+            if (ImGui::MenuItem("Save All", "Ctrl+S")) {
                 repo.Save();
                 sm.Save();
             }
@@ -121,36 +121,36 @@ void UIManager::RenderAll() {
             auto* curBook = repo.GetActiveBook();
             auto* curPage = repo.GetActivePage();
 
-            if (ImGui::BeginMenu("Exportar Documento Completo...", curBook != nullptr)) {
-                if (ImGui::MenuItem("Libro Digital EPUB (.epub)")) {
+            if (ImGui::BeginMenu("Export Full Notebook...", curBook != nullptr)) {
+                if (ImGui::MenuItem("EPUB E-Book (.epub)")) {
                     std::string out;
                     if (ExportManager::ExportBook(*curBook, ExportFormat::EPUB, out)) {
-                        m_ExportStatusMsg = "Documento exportado exitosamente a EPUB";
+                        m_ExportStatusMsg = "Notebook exported successfully to EPUB";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar el documento a EPUB.";
+                        m_ExportStatusMsg = "Failed to export notebook to EPUB.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
                 }
-                if (ImGui::MenuItem("Documento PDF (.pdf)")) {
+                if (ImGui::MenuItem("PDF Document (.pdf)")) {
                     std::string out;
                     if (ExportManager::ExportBook(*curBook, ExportFormat::PDF, out)) {
-                        m_ExportStatusMsg = "Documento exportado exitosamente a PDF";
+                        m_ExportStatusMsg = "Notebook exported successfully to PDF";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar el documento a PDF.";
+                        m_ExportStatusMsg = "Failed to export notebook to PDF.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
                 }
-                if (ImGui::MenuItem("Microsoft Word DOCX (.docx)")) {
+                if (ImGui::MenuItem("Microsoft Word (.docx)")) {
                     std::string out;
                     if (ExportManager::ExportBook(*curBook, ExportFormat::DOCX, out)) {
-                        m_ExportStatusMsg = "Documento exportado exitosamente a DOCX";
+                        m_ExportStatusMsg = "Notebook exported successfully to DOCX";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar el documento a DOCX.";
+                        m_ExportStatusMsg = "Failed to export notebook to DOCX.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
@@ -158,10 +158,10 @@ void UIManager::RenderAll() {
                 if (ImGui::MenuItem("Markdown (.md)")) {
                     std::string out;
                     if (ExportManager::ExportBook(*curBook, ExportFormat::Markdown, out)) {
-                        m_ExportStatusMsg = "Documento exportado exitosamente a Markdown";
+                        m_ExportStatusMsg = "Notebook exported successfully to Markdown";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar el documento a Markdown.";
+                        m_ExportStatusMsg = "Failed to export notebook to Markdown.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
@@ -169,36 +169,36 @@ void UIManager::RenderAll() {
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Exportar Hoja Actual...", curBook != nullptr && curPage != nullptr)) {
-                if (ImGui::MenuItem("Documento PDF (.pdf)")) {
+            if (ImGui::BeginMenu("Export Current Page...", curBook != nullptr && curPage != nullptr)) {
+                if (ImGui::MenuItem("PDF Document (.pdf)")) {
                     std::string out;
                     if (ExportManager::ExportCurrentPage(*curBook, *curPage, ExportFormat::PDF, out)) {
-                        m_ExportStatusMsg = "Hoja exportada exitosamente a PDF";
+                        m_ExportStatusMsg = "Page exported successfully to PDF";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar la hoja a PDF.";
+                        m_ExportStatusMsg = "Failed to export page to PDF.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
                 }
-                if (ImGui::MenuItem("Libro Digital EPUB (.epub)")) {
+                if (ImGui::MenuItem("EPUB E-Book (.epub)")) {
                     std::string out;
                     if (ExportManager::ExportCurrentPage(*curBook, *curPage, ExportFormat::EPUB, out)) {
-                        m_ExportStatusMsg = "Hoja exportada exitosamente a EPUB";
+                        m_ExportStatusMsg = "Page exported successfully to EPUB";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar la hoja a EPUB.";
+                        m_ExportStatusMsg = "Failed to export page to EPUB.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
                 }
-                if (ImGui::MenuItem("Microsoft Word DOCX (.docx)")) {
+                if (ImGui::MenuItem("Microsoft Word (.docx)")) {
                     std::string out;
                     if (ExportManager::ExportCurrentPage(*curBook, *curPage, ExportFormat::DOCX, out)) {
-                        m_ExportStatusMsg = "Hoja exportada exitosamente a DOCX";
+                        m_ExportStatusMsg = "Page exported successfully to DOCX";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar la hoja a DOCX.";
+                        m_ExportStatusMsg = "Failed to export page to DOCX.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
@@ -206,10 +206,10 @@ void UIManager::RenderAll() {
                 if (ImGui::MenuItem("Markdown (.md)")) {
                     std::string out;
                     if (ExportManager::ExportCurrentPage(*curBook, *curPage, ExportFormat::Markdown, out)) {
-                        m_ExportStatusMsg = "Hoja exportada exitosamente a Markdown";
+                        m_ExportStatusMsg = "Page exported successfully to Markdown";
                         m_LastExportedFile = out;
                     } else {
-                        m_ExportStatusMsg = "Error al exportar la hoja a Markdown.";
+                        m_ExportStatusMsg = "Failed to export page to Markdown.";
                         m_LastExportedFile = "";
                     }
                     m_ShowExportModal = true;
@@ -217,31 +217,31 @@ void UIManager::RenderAll() {
                 ImGui::EndMenu();
             }
 
-            if (ImGui::MenuItem("Abrir Carpeta de Exportaciones...")) {
+            if (ImGui::MenuItem("Open Exports Folder...")) {
                 ExportManager::OpenExportFolder(AppPaths::GetBackupsDir());
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Ajustes y Preferencias...", "Ctrl+,")) {
+            if (ImGui::MenuItem("Settings & Preferences...", "Ctrl+,")) {
                 m_ShowSettingsModal = true;
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Salir", "Alt+F4")) {
+            if (ImGui::MenuItem("Exit", "Alt+F4")) {
                 if (m_Window) glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
             }
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Ver")) {
-            if (ImGui::MenuItem("Ir a la Biblioteca", nullptr, m_CurrentScreen == AppScreen::Library)) {
+        if (ImGui::BeginMenu("View")) {
+            if (ImGui::MenuItem("Library View", nullptr, m_CurrentScreen == AppScreen::Library)) {
                 m_CurrentScreen = AppScreen::Library;
             }
-            if (ImGui::MenuItem("Ir al Editor de Trabajo", nullptr, m_CurrentScreen == AppScreen::DocumentWorkspace)) {
+            if (ImGui::MenuItem("Editor Workspace", nullptr, m_CurrentScreen == AppScreen::DocumentWorkspace)) {
                 m_CurrentScreen = AppScreen::DocumentWorkspace;
             }
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Tema")) {
+        if (ImGui::BeginMenu("Theme")) {
             const ThemePreset presets[] = {
                 ThemePreset::DarkModern,
                 ThemePreset::Paper,
@@ -260,19 +260,19 @@ void UIManager::RenderAll() {
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Ayuda")) {
-            if (ImGui::MenuItem("🚀 Buscar Actualizaciones...")) {
+        if (ImGui::BeginMenu("Help")) {
+            if (ImGui::MenuItem("Check for Updates...")) {
                 UpdateManager::Get().CheckForUpdates(true);
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Atajos de Teclado")) {
+            if (ImGui::MenuItem("Keyboard Shortcuts")) {
                 m_ShowShortcutsModal = true;
             }
-            if (ImGui::MenuItem("⚙ Ajustes y Preferencias...", "Ctrl+,")) {
+            if (ImGui::MenuItem("Settings & Preferences...", "Ctrl+,")) {
                 m_ShowSettingsModal = true;
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Acerca de la Aplicación")) {
+            if (ImGui::MenuItem("About Application")) {
                 m_ShowAboutModal = true;
             }
             ImGui::EndMenu();
@@ -350,7 +350,7 @@ void UIManager::RenderWorkspaceHeader() {
 
     // Botón para volver a la biblioteca
     ImGui::PushStyleColor(ImGuiCol_Button, ToVec4(theme.surface1));
-    if (ImGui::Button("⬅ Volver a la Biblioteca", ImVec2(185.0f, 32.0f))) {
+    if (ImGui::Button("Back to Library", ImVec2(160.0f, 32.0f))) {
         m_CurrentScreen = AppScreen::Library;
     }
     ImGui::PopStyleColor();
@@ -359,7 +359,7 @@ void UIManager::RenderWorkspaceHeader() {
 
     // Título del Documento
     if (book) {
-        ImGui::TextColored(ToVec4(theme.accentLight), "📖 %s", book->title.c_str());
+        ImGui::TextColored(ToVec4(theme.accentLight), "%s", book->title.c_str());
         if (!book->subtitle.empty()) {
             ImGui::SameLine();
             ImGui::TextColored(ToVec4(theme.textDim), "(%s)", book->subtitle.c_str());
@@ -372,7 +372,7 @@ void UIManager::RenderWorkspaceHeader() {
 
         bool hasPrev = repo.HasPrevPage();
         if (!hasPrev) ImGui::BeginDisabled();
-        if (ImGui::Button("◀ Anterior", ImVec2(80.0f, 30.0f))) {
+        if (ImGui::Button("< Previous", ImVec2(85.0f, 30.0f))) {
             repo.PrevPage();
         }
         if (!hasPrev) ImGui::EndDisabled();
@@ -387,7 +387,7 @@ void UIManager::RenderWorkspaceHeader() {
 
         bool hasNext = repo.HasNextPage();
         if (!hasNext) ImGui::BeginDisabled();
-        if (ImGui::Button("Siguiente ▶", ImVec2(80.0f, 30.0f))) {
+        if (ImGui::Button("Next >", ImVec2(85.0f, 30.0f))) {
             repo.NextPage();
         }
         if (!hasNext) ImGui::EndDisabled();
@@ -396,7 +396,7 @@ void UIManager::RenderWorkspaceHeader() {
     ImGui::SameLine(ImGui::GetWindowWidth() - 110.0f);
 
     // Botón Guardar
-    if (ImGui::Button("💾 Guardar", ImVec2(90.0f, 30.0f))) {
+    if (ImGui::Button("Save", ImVec2(90.0f, 30.0f))) {
         repo.Save();
         SettingsManager::Get().Save();
     }
@@ -415,16 +415,16 @@ void UIManager::RenderSheetsColumn(float width, float height) {
     ImGui::BeginChild("##LeftSheetsColumn", ImVec2(width, height), true);
 
     // Encabezado de la columna
-    ImGui::TextColored(ToVec4(theme.accentLight), "📑 HOJAS DEL DOCUMENTO");
+    ImGui::TextColored(ToVec4(theme.accentLight), "NOTEBOOK OUTLINE");
     ImGui::Spacing();
 
     // Botones de acción rápida
     float halfBtn = (ImGui::GetContentRegionAvail().x - 6.0f) * 0.5f;
-    if (ImGui::Button("+ Hoja", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("+ Page", ImVec2(halfBtn, 28.0f))) {
         m_OpenNewSheetModal = true;
     }
     ImGui::SameLine();
-    if (ImGui::Button("+ Sección", ImVec2(halfBtn, 28.0f))) {
+    if (ImGui::Button("+ Section", ImVec2(halfBtn, 28.0f))) {
         m_OpenNewSectionModal = true;
     }
 
@@ -432,14 +432,14 @@ void UIManager::RenderSheetsColumn(float width, float height) {
 
     // Filtro de hojas
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::InputTextWithHint("##SheetFilter", "Filtrar hojas...", m_SheetFilter, sizeof(m_SheetFilter));
+    ImGui::InputTextWithHint("##SheetFilter", "Filter pages...", m_SheetFilter, sizeof(m_SheetFilter));
 
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
     if (!book) {
-        ImGui::TextColored(ToVec4(theme.textDim), "No hay documento activo.");
+        ImGui::TextColored(ToVec4(theme.textDim), "No active notebook.");
         ImGui::EndChild();
         return;
     }
@@ -459,7 +459,7 @@ void UIManager::RenderSheetsColumn(float width, float height) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
         if (isChActive) flags |= ImGuiTreeNodeFlags_Selected;
 
-        std::string chLabel = "📁 " + ch.title + " (" + std::to_string(ch.pages.size()) + ")";
+        std::string chLabel = ch.title + " (" + std::to_string(ch.pages.size()) + ")";
         bool open = ImGui::TreeNodeEx("##ChNode", flags, "%s", chLabel.c_str());
 
         if (ImGui::IsItemClicked()) {
@@ -468,11 +468,11 @@ void UIManager::RenderSheetsColumn(float width, float height) {
 
         // Context menu para la sección
         if (ImGui::BeginPopupContextItem("##ChCtx")) {
-            if (ImGui::MenuItem("Añadir Hoja a esta sección")) {
+            if (ImGui::MenuItem("Add Page to this section")) {
                 repo.SetActiveChapter(c);
-                repo.AddPage("Nueva Hoja", "GENERAL");
+                repo.AddPage("New Page", "GENERAL");
             }
-            if (book->chapters.size() > 1 && ImGui::MenuItem("Eliminar Sección")) {
+            if (book->chapters.size() > 1 && ImGui::MenuItem("Delete Section")) {
                 repo.DeleteChapter(c);
             }
             ImGui::EndPopup();
@@ -494,8 +494,8 @@ void UIManager::RenderSheetsColumn(float width, float height) {
                 ImGui::PushID(p);
 
                 bool isPgActive = (c == activeCh && p == activePg);
-                std::string star = page.isBookmarked ? "★ " : "  ";
-                std::string pgLabel = star + "📄 " + page.title;
+                std::string star = page.isBookmarked ? "* " : "  ";
+                std::string pgLabel = star + page.title;
 
                 if (ImGui::Selectable(pgLabel.c_str(), isPgActive)) {
                     repo.SetActiveIndices(repo.GetActiveBookIndex(), c, p);
@@ -503,15 +503,15 @@ void UIManager::RenderSheetsColumn(float width, float height) {
 
                 // Menú contextual para la hoja
                 if (ImGui::BeginPopupContextItem("##PageCtx")) {
-                    if (ImGui::MenuItem(page.isBookmarked ? "Quitar Marcador" : "Marcar como Favorita")) {
+                    if (ImGui::MenuItem(page.isBookmarked ? "Remove Bookmark" : "Add Bookmark")) {
                         auto* curP = repo.GetActivePage();
                         if (curP) curP->isBookmarked = !curP->isBookmarked;
                         repo.MarkDirty();
                     }
-                    if (ImGui::MenuItem("Duplicar Hoja")) {
+                    if (ImGui::MenuItem("Duplicate Page")) {
                         repo.DuplicateCurrentPage();
                     }
-                    if (ch.pages.size() > 1 && ImGui::MenuItem("Eliminar Hoja")) {
+                    if (ch.pages.size() > 1 && ImGui::MenuItem("Delete Page")) {
                         repo.DeletePage(p);
                     }
                     ImGui::EndPopup();
@@ -527,19 +527,19 @@ void UIManager::RenderSheetsColumn(float width, float height) {
 
     // Modal para nueva hoja
     if (m_OpenNewSheetModal) {
-        ImGui::OpenPopup("Añadir Nueva Hoja");
+        ImGui::OpenPopup("Add New Page");
         m_OpenNewSheetModal = false;
     }
-    if (ImGui::BeginPopupModal("Añadir Nueva Hoja", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Nombre de la nueva hoja:");
-        ImGui::InputText("Título", m_NewSheetTitle, sizeof(m_NewSheetTitle));
+    if (ImGui::BeginPopupModal("Add New Page", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("New page title:");
+        ImGui::InputText("Title", m_NewSheetTitle, sizeof(m_NewSheetTitle));
         ImGui::Spacing();
-        if (ImGui::Button("Añadir", ImVec2(100, 28))) {
+        if (ImGui::Button("Add", ImVec2(100, 28))) {
             repo.AddPage(m_NewSheetTitle, "GENERAL");
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancelar", ImVec2(90, 28))) {
+        if (ImGui::Button("Cancel", ImVec2(90, 28))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
@@ -547,19 +547,19 @@ void UIManager::RenderSheetsColumn(float width, float height) {
 
     // Modal para nueva sección
     if (m_OpenNewSectionModal) {
-        ImGui::OpenPopup("Añadir Nueva Sección");
+        ImGui::OpenPopup("Add New Section");
         m_OpenNewSectionModal = false;
     }
-    if (ImGui::BeginPopupModal("Añadir Nueva Sección", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Nombre de la nueva sección:");
-        ImGui::InputText("Título", m_NewSectionTitle, sizeof(m_NewSectionTitle));
+    if (ImGui::BeginPopupModal("Add New Section", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("New section title:");
+        ImGui::InputText("Title", m_NewSectionTitle, sizeof(m_NewSectionTitle));
         ImGui::Spacing();
-        if (ImGui::Button("Crear", ImVec2(100, 28))) {
+        if (ImGui::Button("Create", ImVec2(100, 28))) {
             repo.AddChapter(m_NewSectionTitle);
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancelar", ImVec2(90, 28))) {
+        if (ImGui::Button("Cancel", ImVec2(90, 28))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
@@ -585,22 +585,22 @@ void UIManager::RenderStatusBar() {
         int curGlobalPage = book->GetGlobalPageIndex(repo.GetActiveChapterIndex(), repo.GetActivePageIndex()) + 1;
         int totalPages = book->GetTotalPages();
 
-        ImGui::TextColored(ToVec4(theme.accent), "📖 %s", book->title.c_str());
+        ImGui::TextColored(ToVec4(theme.accent), "%s", book->title.c_str());
         ImGui::SameLine();
         ImGui::TextColored(ToVec4(theme.textDim), " >  %s", ch->title.c_str());
         ImGui::SameLine();
         ImGui::TextColored(ToVec4(theme.accentLight), " >  %s", page->title.c_str());
         ImGui::SameLine();
-        ImGui::TextColored(ToVec4(theme.textDim), " | Hoja %d de %d", curGlobalPage, totalPages);
+        ImGui::TextColored(ToVec4(theme.textDim), " | Page %d of %d", curGlobalPage, totalPages);
         ImGui::SameLine();
-        ImGui::TextColored(ToVec4(theme.textFaint), " | %d palabras", page->GetWordCount());
+        ImGui::TextColored(ToVec4(theme.textFaint), " | %d words", page->GetWordCount());
     } else {
-        ImGui::TextColored(ToVec4(theme.textDim), "Cuaderno de Notas listo. Modo: %s",
-                           (m_CurrentScreen == AppScreen::Library ? "Biblioteca" : "Editor"));
+        ImGui::TextColored(ToVec4(theme.textDim), "WitcherNotes ready. Mode: %s",
+                           (m_CurrentScreen == AppScreen::Library ? "Library" : "Editor"));
     }
 
     // Indicador de autoguardado a la derecha
-    const char* saveStatus = repo.IsDirty() ? "● Cambios pendientes" : "✔ Guardado";
+    const char* saveStatus = repo.IsDirty() ? "* Unsaved changes" : "Saved";
     float saveW = ImGui::CalcTextSize(saveStatus).x;
     ImGui::SameLine(ImGui::GetWindowWidth() - saveW - 20.0f);
     ImGui::TextColored(repo.IsDirty() ? ToVec4(theme.accent) : ToVec4(theme.textDim), "%s", saveStatus);
@@ -612,26 +612,26 @@ void UIManager::RenderStatusBar() {
 
 void UIManager::RenderAboutModal() {
     if (m_ShowAboutModal) {
-        ImGui::OpenPopup("Acerca de la Aplicación");
+        ImGui::OpenPopup("About Application");
         m_ShowAboutModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Acerca de la Aplicación", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopupModal("About Application", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
         ImGui::TextColored(ToVec4(theme.accentLight), APP_NAME);
         ImGui::TextColored(ToVec4(theme.textDim), APP_DESCRIPTION);
-        ImGui::TextColored(ToVec4(theme.textFaint), "Versión %s", APP_VERSION_STRING);
+        ImGui::TextColored(ToVec4(theme.textFaint), "Version %s", APP_VERSION_STRING);
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::Text("Aplicación moderna y ligera desarrollada en C++ y Dear ImGui.");
-        ImGui::Text("Diseñada con un flujo intuitivo de biblioteca, estructura de hojas y editor de notas.");
+        ImGui::Text("Modern, lightweight desktop notebook built with C++17 and Dear ImGui.");
+        ImGui::Text("Engineered for structured knowledge management, reading mode, and Markdown notes.");
         ImGui::Spacing();
-        ImGui::TextColored(ToVec4(theme.accent), "✨ 100% Libre y de Código Abierto (Licencia MIT)");
+        ImGui::TextColored(ToVec4(theme.accent), "100% Free and Open Source (MIT License)");
         ImGui::Spacing();
 
-        if (ImGui::Button("Cerrar", ImVec2(120, 30))) {
+        if (ImGui::Button("Close", ImVec2(120, 30))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
@@ -640,25 +640,25 @@ void UIManager::RenderAboutModal() {
 
 void UIManager::RenderShortcutsModal() {
     if (m_ShowShortcutsModal) {
-        ImGui::OpenPopup("Atajos de Teclado");
+        ImGui::OpenPopup("Keyboard Shortcuts");
         m_ShowShortcutsModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Atajos de Teclado", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopupModal("Keyboard Shortcuts", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
-        ImGui::TextColored(ToVec4(theme.accent), "Atajos de Teclado Principales:");
+        ImGui::TextColored(ToVec4(theme.accent), "Key Commands:");
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::Text("Ctrl + S             : Guardar Cambios");
-        ImGui::Text("Ctrl + N             : Nueva Hoja");
-        ImGui::Text("Ctrl + B             : Alternar entre Biblioteca y Espacio de Trabajo");
-        ImGui::Text("Flecha Izquierda / A : Hoja Anterior");
-        ImGui::Text("Flecha Derecha / D   : Hoja Siguiente");
+        ImGui::Text("Ctrl + S             : Save Changes");
+        ImGui::Text("Ctrl + N             : New Page");
+        ImGui::Text("Ctrl + B             : Toggle Library / Workspace");
+        ImGui::Text("Left Arrow / A       : Previous Page");
+        ImGui::Text("Right Arrow / D      : Next Page");
         ImGui::Spacing();
 
-        if (ImGui::Button("Entendido", ImVec2(120, 30))) {
+        if (ImGui::Button("Got It", ImVec2(120, 30))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
@@ -667,25 +667,25 @@ void UIManager::RenderShortcutsModal() {
 
 void UIManager::RenderExportModal() {
     if (m_ShowExportModal) {
-        ImGui::OpenPopup("Resultado de Exportación##UIMenuModal");
+        ImGui::OpenPopup("Export Result##UIMenuModal");
         m_ShowExportModal = false;
     }
 
-    if (ImGui::BeginPopupModal("Resultado de Exportación##UIMenuModal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (ImGui::BeginPopupModal("Export Result##UIMenuModal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ThemeColors theme = SettingsManager::Get().GetCurrentThemeColors();
 
         ImGui::TextColored(ToVec4(theme.accentLight), "%s", m_ExportStatusMsg.c_str());
         if (!m_LastExportedFile.empty()) {
             ImGui::Spacing();
-            ImGui::TextColored(ToVec4(theme.textDim), "Archivo guardado en:");
+            ImGui::TextColored(ToVec4(theme.textDim), "File saved to:");
             ImGui::TextColored(ToVec4(theme.textPrimary), "%s", m_LastExportedFile.c_str());
             ImGui::Spacing();
-            if (ImGui::Button("📁 Abrir Carpeta", ImVec2(130, 30))) {
+            if (ImGui::Button("Open Folder", ImVec2(130, 30))) {
                 ExportManager::OpenExportFolder(m_LastExportedFile);
             }
             ImGui::SameLine();
         }
-        if (ImGui::Button("Aceptar", ImVec2(100, 30))) {
+        if (ImGui::Button("OK", ImVec2(100, 30))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
@@ -695,7 +695,7 @@ void UIManager::RenderExportModal() {
 void UIManager::RenderGlobalUpdatePopup() {
     auto& updater = UpdateManager::Get();
     if (updater.ShouldShowModal()) {
-        ImGui::OpenPopup("Actualización Disponible##GlobalModal");
+        ImGui::OpenPopup("Update Available##GlobalModal");
         updater.SetShowModal(false);
     }
 
@@ -709,10 +709,10 @@ void UIManager::RenderGlobalUpdatePopup() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 10.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24.0f, 20.0f));
 
-    if (ImGui::BeginPopupModal("Actualización Disponible##GlobalModal", nullptr,
+    if (ImGui::BeginPopupModal("Update Available##GlobalModal", nullptr,
                                ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
 
-        ImGui::TextColored(ToVec4(theme.textPrimary), "Nueva versión disponible");
+        ImGui::TextColored(ToVec4(theme.textPrimary), "New version available");
         ImGui::Spacing();
 
         ImGui::TextColored(ImVec4(0.96f, 0.65f, 0.14f, 1.0f), "v%s", updater.GetLatestVersion().c_str());
@@ -727,7 +727,7 @@ void UIManager::RenderGlobalUpdatePopup() {
             float totMB = updater.GetTotalMB();
             float speed = updater.GetDownloadSpeedMBs();
 
-            ImGui::TextColored(ToVec4(theme.accentLight), "Descargando actualización...");
+            ImGui::TextColored(ToVec4(theme.accentLight), "Downloading update...");
             ImGui::Spacing();
 
             ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ToVec4(theme.accent));
@@ -743,19 +743,19 @@ void UIManager::RenderGlobalUpdatePopup() {
                 ImGui::TextColored(ToVec4(theme.textDim), "%.1f MB / %.1f MB   %.1f MB/s   %d%%",
                                    dlMB, totMB, speed, (int)(pct * 100.0f));
             } else {
-                ImGui::TextColored(ToVec4(theme.textDim), "Descargando...  %d%%", (int)(pct * 100.0f));
+                ImGui::TextColored(ToVec4(theme.textDim), "Downloading...  %d%%", (int)(pct * 100.0f));
             }
 
             ImGui::Spacing();
-            ImGui::TextColored(ImVec4(0.85f, 0.35f, 0.35f, 1.0f), "No cierres la aplicación durante la descarga.");
+            ImGui::TextColored(ImVec4(0.85f, 0.35f, 0.35f, 1.0f), "Do not close the application during download.");
         } else {
             ImGui::TextColored(ToVec4(theme.textPrimary),
-                "Hay una nueva versión disponible para descargar e instalar.\n"
-                "Al continuar, se descargará el paquete y se aplicará la actualización.");
+                "A new version is available to download and install.\n"
+                "Continuing will download the update package and apply it.");
 
             if (!updater.GetChangelog().empty()) {
                 ImGui::Spacing();
-                ImGui::TextColored(ToVec4(theme.accentLight), "Novedades:");
+                ImGui::TextColored(ToVec4(theme.accentLight), "Changelog:");
                 ImGui::BeginChild("##ChangelogBox", ImVec2(-1.0f, 90.0f), true);
                 ImGui::TextWrapped("%s", updater.GetChangelog().c_str());
                 ImGui::EndChild();
@@ -767,13 +767,13 @@ void UIManager::RenderGlobalUpdatePopup() {
             ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(14.0f, 7.0f));
 
-            if (ImGui::Button("Descargar e instalar", ImVec2(180.0f, 34.0f))) {
+            if (ImGui::Button("Download & Install", ImVec2(180.0f, 34.0f))) {
                 updater.DownloadAndInstall();
             }
 
             ImGui::SameLine(0, 10.0f);
 
-            if (ImGui::Button("Más tarde", ImVec2(110.0f, 34.0f))) {
+            if (ImGui::Button("Later", ImVec2(110.0f, 34.0f))) {
                 ImGui::CloseCurrentPopup();
             }
 
@@ -789,7 +789,7 @@ void UIManager::RenderGlobalUpdatePopup() {
 
 void UIManager::RenderSettingsModal() {
     if (m_ShowSettingsModal) {
-        ImGui::OpenPopup("Ajustes y Preferencias##GlobalModal");
+        ImGui::OpenPopup("Settings & Preferences##GlobalModal");
         m_ShowSettingsModal = false;
     }
 
@@ -802,7 +802,7 @@ void UIManager::RenderSettingsModal() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16.0f, 16.0f));
 
-    if (ImGui::BeginPopupModal("Ajustes y Preferencias##GlobalModal", nullptr, ImGuiWindowFlags_None)) {
+    if (ImGui::BeginPopupModal("Settings & Preferences##GlobalModal", nullptr, ImGuiWindowFlags_None)) {
         float availH = ImGui::GetContentRegionAvail().y - 42.0f;
         ImGui::BeginChild("##SettingsScrollArea", ImVec2(0.0f, availH), false);
         m_SettingsPanel->Render();
@@ -811,7 +811,7 @@ void UIManager::RenderSettingsModal() {
         ImGui::Separator();
         ImGui::Spacing();
 
-        if (ImGui::Button("Cerrar", ImVec2(120.0f, 30.0f))) {
+        if (ImGui::Button("Close", ImVec2(120.0f, 30.0f))) {
             SettingsManager::Get().Save();
             ImGui::CloseCurrentPopup();
         }

@@ -20,22 +20,22 @@ SettingsManager& SettingsManager::Get() {
 
 const char* SettingsManager::GetThemeName(ThemePreset preset) {
     switch (preset) {
-        case ThemePreset::DarkModern:    return "Oscuro Moderno";
-        case ThemePreset::Paper:         return "Papel Clásico";
-        case ThemePreset::DeepPurple:    return "Púrpura Elegante";
-        case ThemePreset::Sapphire:      return "Azul Zafiro";
-        case ThemePreset::MinimalLight:  return "Claro Minimalista";
-        case ThemePreset::SepiaWarm:     return "Sepia Cálido";
-        default:                         return "Por Defecto";
+        case ThemePreset::DarkModern:    return "Modern Dark";
+        case ThemePreset::Paper:         return "Classic Paper";
+        case ThemePreset::DeepPurple:    return "Midnight Purple";
+        case ThemePreset::Sapphire:      return "Sapphire Blue";
+        case ThemePreset::MinimalLight:  return "Minimal Light";
+        case ThemePreset::SepiaWarm:     return "Warm Sepia";
+        default:                         return "Default";
     }
 }
 
 const char* SettingsManager::GetReaderModeName(ReaderMode mode) {
     switch (mode) {
-        case ReaderMode::TwoPageSpread:    return "Doble Página (Libro Abierto)";
-        case ReaderMode::SinglePage:       return "Página Única (Centrado)";
-        case ReaderMode::ContinuousScroll: return "Desplazamiento Continuo";
-        default:                           return "Estándar";
+        case ReaderMode::TwoPageSpread:    return "Two-Page Book Spread";
+        case ReaderMode::SinglePage:       return "Single Page (Centered)";
+        case ReaderMode::ContinuousScroll: return "Continuous Scroll";
+        default:                           return "Standard";
     }
 }
 
