@@ -29,5 +29,5 @@ Thumbs.db
 node_modules/
 dist/
 .firebase/
-.env
-.env.local
+# Web directory (stored on the 'web' git branch)
+web/
