@@ -1,0 +1,33 @@
+# C/C++ Build Artifacts
+build/
+build-*/
+cmake-build-*/
+bin/
+out/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+
+# AppImage build cache
+build-appimage/
+
+# Typo alias packaging folder
+packaing/
+
+# IDE / Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Node / Web artifacts
+node_modules/
+dist/
+.firebase/
+.env
+.env.local

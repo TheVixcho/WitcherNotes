@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=WitcherNotes
+Comment=Grimorio Digital & E-Book Note Engine
+Exec=/home/vixcho/Documentos/WitcherNotes/build-linux/WitcherNotes
+Icon=/home/vixcho/Documentos/WitcherNotes/witchernotes.png
+Terminal=false
+Type=Application
+Categories=Office;Utility;
